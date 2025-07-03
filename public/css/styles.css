@@ -8,7 +8,7 @@
 /******* Body with Checkerboard Background ***************/
 body {
   font-family: sans-serif;
-  background-image: url("/images/site/Checkerboard.jpg");
+  background-image: url("/images/site/Checkerboard.jpg");/*** background image ***/
   background-size: 50px 50px;
   background-repeat: repeat;
   background-position: top left;
@@ -177,5 +177,3 @@ footer {
   margin-top: auto;
 }
 
-/******* REMOVE Responsive Design ***************/
-/* No media queries — mobile will display the same layout as desktop */
