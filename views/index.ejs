@@ -1,1 +1,90 @@
-<h1> Clementine Iradukunda</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | CSE Motors</title>
+
+  <!-- Link to your CSS -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- Main background container -->
+  <div class="container">
+    <!-- White content wrapper -->
+    <div class="inner-content">
+
+      <header>
+        <h1>Welcome to CSE Motors!</h1>
+        <% const infoMessages = messages().info; %>
+        <% if (Array.isArray(infoMessages)) { %>
+          <div class="flash flash-info">
+            <% infoMessages.forEach(function(msg) { %>
+              <p><%= msg %></p>
+            <% }) %>
+          </div>
+        <% } %>
+      </header>
+
+      <main>
+        <div class="delorean">
+          <div class="delorean-left">
+            <h2>DMC Delorean</h2>
+            <ul>
+              <li>3 Cup holders</li>
+              <li>Superman doors</li>
+              <li>Fuzzy dice!</li>
+            </ul>
+            <button aria-label="Own the DMC Delorean today">Own Today</button>
+          </div>
+          <img src="/images/vehicles/delorean-tn.jpg" alt="DMC Delorean" />
+        </div>
+
+        <div class="upgrades-and-reviews">
+          <div class="upgrades">
+            <h2>Delorean Upgrades</h2>
+            <div class="upgrades-items">
+              <div>
+                <img src="/images/upgrades/flux-cap.png" alt="Flux Capacitor" />
+                <p>Flux Capacitor</p>
+              </div>
+              <div>
+                <img src="/images/upgrades/bumper_sticker.jpg" alt="Bumper Stickers" />
+                <p>Bumper Stickers</p>
+              </div>
+              <div>
+                <img src="/images/upgrades/flame.jpg" alt="Flame Decals" />
+                <p>Flame Decals</p>
+              </div>
+              <div>
+                <img src="/images/upgrades/hub-cap.jpg" alt="Hub Caps" />
+                <p>Hub Caps</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="reviews">
+            <h2>DMC Delorean Reviews</h2>
+            <ul>
+              <li>"So fast it's almost like traveling in time." (4/5)</li>
+              <li>"Coolest ride on the road." (4/5)</li>
+              <li>"I'm feeling McFly!" (5/5)</li>
+              <li>"The most futuristic ride of our day." (4.5/5)</li>
+              <li>"80's livin and I love it!" (5/5)</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>&copy; 2023, CSE 340 App</p>
+       <div class="footer-links">
+          <a href="/bumper-stickers"></a>
+          <a href="/hub-caps"></a>
+        </div>
+      </footer>
+      
+    </div> <!-- .inner-content -->
+  </div> <!-- .container -->
+</body>
+</html>

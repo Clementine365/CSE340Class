@@ -1,41 +1,66 @@
 /* ******************************************
  * This server.js file is the primary file of the 
  * application. It is used to control the project.
- *******************************************/
+ ******************************************/
+
 /* ***********************
  * Require Statements
  *************************/
 const express = require("express")
 const expressLayouts = require("express-ejs-layouts")
+const session = require("express-session")
+const flash = require("connect-flash")
 const env = require("dotenv").config()
 const app = express()
 const static = require("./routes/static")
 
 /* ***********************
- * view Engine and Templates
+ * Middleware
+ *************************/
+// Enable session middleware
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true
+}))
+
+// Enable flash messages
+app.use(flash())
+
+// Middleware to expose flash messages to all views
+app.use((req, res, next) => {
+  res.locals.messages = () => req.flash()
+  next()
+})
+
+/* ***********************
+ * View Engine and Templates
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout") // not at views root
 
-
 /* ***********************
- * Routes
+ * Static Routes
  *************************/
 app.use(static)
 
-//Index route
+/* ***********************
+ * Application Routes
+ *************************/
 app.get("/", function(req, res){
-  res.render("index",{title:"Home"})
+  req.flash("info", "Welcome to CSE Motors!") // Optional: just to test messages
+  res.render("index", { title: "Home" })
 })
+
 /* ***********************
  * Local Server Information
- * Values from .env (environment) file
  *************************/
-const port = process.env.PORT || 5500;
-const host = process.env.HOST || 'localhost';
+const port = process.env.PORT || 5500
+const host = process.env.HOST || 'localhost'
+
 /* ***********************
- * Log statement to confirm server operation
+ * Start Server
  *************************/
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
