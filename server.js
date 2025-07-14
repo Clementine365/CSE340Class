@@ -13,6 +13,8 @@ const flash = require("connect-flash")
 const env = require("dotenv").config()
 const app = express()
 const static = require("./routes/static")
+const inventoryRoute = require("./routes/inventoryRoute")
+const baseController = require("./controllers/baseController")
 
 /* ***********************
  * Middleware
@@ -48,11 +50,13 @@ app.use(static)
 /* ***********************
  * Application Routes
  *************************/
-app.get("/", function(req, res){
+app.get("/", baseController.buildHome ) 
+/*{
   req.flash("info", "Welcome to CSE Motors!") // Optional: just to test messages
   res.render("index", { title: "Home" })
-})
-
+}) */
+// Inventory routes
+app.use("/inv", inventoryRoute)
 /* ***********************
  * Local Server Information
  *************************/
