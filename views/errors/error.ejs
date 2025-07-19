@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fefefe;
+      color: #333;
+      margin: 0;
+      padding: 2em;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+    }
+
+    .message {
+      font-size: 1.2em;
+      margin: 1em auto;
+      color: #aa0000;
+    }
+
+    .fun {
+      margin-top: 2em;
+      font-style: italic;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <div class="message"><%- message %></div>
+
+  <div class="fun">
+    <p>Oops! something went wrong!!!</p>
+    <p>the page is not available!!!!!!!</p>
+  </div>
+</body>
+</html>
