@@ -7,7 +7,7 @@ const Util = {};
 Util.getNav = async function (req, res, next) {
   let data = await invModel.getClassifications();
 
-  // Support both cases: data.rows or data array directly
+  // this supports both cases: data.rows or data array directly
   const rows = data?.rows || data || [];
 
   let list = "<ul>";

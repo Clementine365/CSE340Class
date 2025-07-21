@@ -54,7 +54,7 @@ app.set("layout", "./layouts/layout"); // layout file path
  * Routes
  *************************/
 
-// At the top of route registration
+// route for errors
 app.use("/error", errorRoute);
 
 // Static page routes
@@ -70,7 +70,7 @@ app.use("/inv", inventoryRoute);
  * 404 Not Found Middleware
  *************************/
 app.use((req, res, next) => {
-  next({ status: 404, message: 'Sorry, we appear to have lost that page.' });
+  next({ status: 404, message: 'Sorry, seems like we lost that page.' });
 });
 
 /* ***********************
@@ -80,7 +80,7 @@ app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav();
   const message = err.status === 404 
     ? err.message 
-    : 'Oh no! There was a crash. Maybe try a different route?';
+    : 'Oh no! There was a crash. you can Maybe try a different route?';
 
   console.error(`Error at: "${req.originalUrl}": ${err.message}`);
 

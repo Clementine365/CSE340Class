@@ -1,9 +1,9 @@
-// Required Resources
+// The Required Resources
 const express = require("express")
 const router = express.Router()
 
 const invController = require("../controllers/invController")
-const utilities = require("../utilities") // Needed for handleErrors
+const utilities = require("../utilities") 
 
 // Route to build inventory by classification view
 router.get(
