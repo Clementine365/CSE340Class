@@ -1,0 +1,47 @@
+<!-- views/inventory/vehicleDetail.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= vehicle.inv_make %> <%= vehicle.inv_model %> - Vehicle Details</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <%- nav %> <!-- Include the navigation menu -->
+
+  <div class="container">
+    <header>
+      <h1><%= vehicle.inv_make %> <%= vehicle.inv_model %> <%= vehicle.inv_year %></h1>
+    </header>
+
+    <main class="content-box">
+      <div class="vehicle-details" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+        <div class="vehicle-image" style="flex: 1 1 40%;">
+          <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>" style="width: 100%; border-radius: 10px;">
+        </div>
+
+        <div class="vehicle-info" style="flex: 1 1 55%;">
+          <h2>Details</h2>
+          <p><strong>Price:</strong> $<%= vehicle.inv_price.toLocaleString() %></p>
+          <p><strong>Mileage:</strong> <%= vehicle.inv_miles.toLocaleString() %> miles</p>
+          <p><strong>Description:</strong> <%= vehicle.inv_description %></p>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <a href="/inv">
+          <button>Back to Inventory</button>
+        </a>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; CSE Motors</p>
+    </footer>
+  </div>
+
+</body>
+</html>

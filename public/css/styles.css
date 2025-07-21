@@ -1,179 +1,174 @@
-/******* Box Model Reset ***************/
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/******* Body with Checkerboard Background ***************/
+/* General Body Styles */
 body {
-  font-family: sans-serif;
-  background-image: url("/images/site/Checkerboard.jpg");/*** background image ***/
+  font-family: var(--standard-font);
+  background-image: url("/images/site/checkerboard.jpg");
   background-size: 50px 50px;
   background-repeat: repeat;
   background-position: top left;
-  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: black;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 30px; /* Adds space around the container */
-  overflow-x: auto; /* Prevent horizontal overflow */
 }
 
-/******* Container that Holds Everything ***************/
+/* Main Container Styles */
 .container {
-  width: 100%;
+  min-height: 100vh;
+  width: 80%;
   max-width: 1000px;
+  margin: 20px auto;
   background-color: white;
-  border: 5px solid cyan;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
   padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
+  border: 3px solid cyan;
 }
 
-/******* Header ***************/
+/* Reusable Content Box for classification/detail pages */
+.content-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  border: 3px solid cyan;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+/* Header Styles */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  background-color: aliceblue;
+  background-color: white;
+  color: black;
+  padding: 10px 0;
+  text-align: center;
 }
 
 header h1 {
+  margin: 0;
   font-size: 2em;
 }
 
-header .account {
-  font-size: 0.8em;
-  color: gray;
-  text-transform: uppercase;
-}
-
-/******* Navigation ***************/
+/* Navigation Styles */
 nav {
-  background-color: #1a1a2e;
-  margin-bottom: 20px;
-  border-radius: 5px;
-}
-
-nav ul {
-  color:#ffffff;
-  list-style: none;
-  display: flex;
-  justify-content: space-around;
+  background-color: black;
   padding: 10px 0;
 }
 
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+nav li {
+  display: inline;
+}
+
 nav a {
-  color: white;
   text-decoration: none;
+  color: black;
+  background-color: white;
   font-weight: bold;
   padding: 5px 15px;
+  border-radius: 5px;
 }
 
-/******* Delorean Hero Section ***************/
+/* Section for DMC Delorean */
 .delorean {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  background-color: #f4f4f4;
-  border-radius: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background-color: #eff1f4;
   padding: 20px;
-  margin-bottom: 30px;
+  border-radius: 10px;
 }
 
-.delorean-left {
-  flex: 1 1 300px;
-}
-
-.delorean-left h2 {
+.delorean h2 {
   color: #00a2e8;
-  margin-bottom: 10px;
 }
 
-.delorean-left ul {
+.delorean ul {
   list-style: none;
   color: #00a2e8;
   margin-bottom: 15px;
 }
 
-.delorean-left button {
-  background-color: #00bfff;
-  color: black;
-  font-weight: bold;
-  padding: 10px 20px;
+.delorean img {
+  width: 40%;
+  max-width: 400px;
+}
+
+/* Button Styles */
+button {
+  background-color: #0095ff;
+  color: white;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
 }
 
-.delorean img {
-  max-width: 100%;
-  flex: 1 1 300px;
-  object-fit: contain;
-}
-
-/******* Upgrades and Reviews Section ***************/
+/* Upgrades and Reviews Layout */
 .upgrades-and-reviews {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 30px;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .upgrades,
 .reviews {
-  flex: 1 1 45%;
-}
-
-.upgrades h2,
-.reviews h2 {
-  margin-bottom: 10px;
-}
-
-.upgrades-items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.upgrades-items div {
-  flex: 1 1 45%;
-  text-align: center;
-  background-color: #11b5eb;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.upgrades-items img {
-  width: 80%;
-  height: auto;
-}
-
-.upgrades-items a {
-  display: block;
-  margin-top: 5px;
-  color: #ffffff;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.reviews ul {
-  list-style: disc;
-  padding-left: 20px;
-}
-
-/******* Footer ***************/
-footer {
-  background-color: #1a1a2e;
-  color: white;
-  text-align: center;
+  width: 48%;
+  background-color: #f8f9fa;
   padding: 20px;
   border-radius: 10px;
-  font-size: 0.9em;
-  margin-top: auto;
 }
 
+/* Footer Styles */
+footer {
+  background-color: blue;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 10px;
+  }
+
+  .delorean {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .delorean img {
+    width: 80%;
+  }
+
+  .upgrades-and-reviews {
+    flex-direction: column;
+  }
+
+  .upgrades,
+  .reviews {
+    width: 100%;
+  }
+
+  .content-box {
+    padding: 15px;
+  }
+}

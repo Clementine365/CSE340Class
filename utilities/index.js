@@ -1,15 +1,19 @@
-const invModel = require("../models/inventory-model")
-const Util = {}
+const invModel = require("../models/inventory-model");
+const Util = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
  ************************** */
 Util.getNav = async function (req, res, next) {
-  let data = await invModel.getClassifications()
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
-  data.rows.forEach((row) => {
-    list += "<li>"
+  let data = await invModel.getClassifications();
+
+  // Support both cases: data.rows or data array directly
+  const rows = data?.rows || data || [];
+
+  let list = "<ul>";
+  list += '<li><a href="/" title="Home page">Home</a></li>';
+  rows.forEach((row) => {
+    list += "<li>";
     list +=
       '<a href="/inv/type/' +
       row.classification_id +
@@ -17,51 +21,89 @@ Util.getNav = async function (req, res, next) {
       row.classification_name +
       ' vehicles">' +
       row.classification_name +
-      "</a>"
-    list += "</li>"
-  })
-  list += "</ul>"
-  return list
-}
+      "</a>";
+    list += "</li>";
+  });
+  list += "</ul>";
+  return list;
+};
 
 /* **************************************
-* Build the classification view HTML
-* ************************************ */
+ * Build the classification view HTML
+ * ************************************ */
 Util.buildClassificationGrid = async function(data){
-  let grid
+  let grid;
   if(data.length > 0){
-    grid = '<ul id="inv-display">'
+    grid = '<ul id="inv-display">';
     data.forEach(vehicle => { 
-      grid += '<li>'
+      grid += '<li>';
       grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
       + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
       + 'details"><img src="' + vehicle.inv_thumbnail 
       +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      +' on CSE Motors" /></a>'
-      grid += '<div class="namePrice">'
-      grid += '<hr />'
-      grid += '<h2>'
+      +' on CSE Motors" /></a>';
+      grid += '<div class="namePrice">';
+      grid += '<hr />';
+      grid += '<h2>';
       grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
       + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-      grid += '</h2>'
+      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>';
+      grid += '</h2>';
       grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-      grid += '</div>'
-      grid += '</li>'
-    })
-    grid += '</ul>'
+      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>';
+      grid += '</div>';
+      grid += '</li>';
+    });
+    grid += '</ul>';
   } else { 
-    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>';
   }
-  return grid
+  return grid;
 }
 
+function buildVehicleDetailView(vehicle) {
+  const formatter = new Intl.NumberFormat("en-US");
+  const price = `$${formatter.format(vehicle.inv_price)}`;
+  const mileage = `${formatter.format(vehicle.inv_miles)} miles`;
+
+  return `
+    <section class="vehicle-detail">
+      <div class="vehicle-image-box">
+        <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+        <p class="inspection-note">This vehicle has passed inspection by an ASE-certified technician.</p>
+      </div>
+
+      <div class="vehicle-info-box">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p class="price">No-Haggle Price: <span>${price}</span></p>
+
+        <ul class="vehicle-specs">
+          <li><strong>Mileage:</strong> ${mileage}</li>
+          <li><strong>Ext. Color:</strong> ${vehicle.inv_color || "Unknown"}</li>
+          <li><strong>Fuel Type:</strong> ${vehicle.inv_fueltype || "Unknown"}</li>
+          <li><strong>Transmission:</strong> ${vehicle.inv_transmission || "Unknown"}</li>
+          <li><strong>Drivetrain:</strong> ${vehicle.inv_drivetrain || "Unknown"}</li>
+          <li><strong>VIN:</strong> ${vehicle.inv_vin || "Unavailable"}</li>
+        </ul>
+
+        <div class="cta-buttons">
+          <a href="#" class="btn primary">Start My Purchase</a>
+          <a href="#" class="btn">Contact Us</a>
+          <a href="#" class="btn">Schedule Test Drive</a>
+          <a href="#" class="btn">Apply for Financing</a>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+Util.buildVehicleDetailView = buildVehicleDetailView;
 
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
  * General Error Handling
  **************************************** */
-Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next)
-module.exports = Util
+Util.handleErrors = fn => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+
+module.exports = Util;
