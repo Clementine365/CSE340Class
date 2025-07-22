@@ -7,10 +7,10 @@
  * Require Statements
  *************************/
 require("dotenv").config();
-
+const session = require("express-session");
+const pool = require('./database/');
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
-const session = require("express-session");
 const flash = require("connect-flash");
 
 const app = express();
@@ -27,12 +27,18 @@ const errorRoute = require("./routes/errorRoute");
 /* ***********************
  * Middleware
  *************************/
-// Enable session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: true
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
 }));
+
+
 
 // Enable flash messages
 app.use(flash());
