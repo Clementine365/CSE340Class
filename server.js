@@ -23,7 +23,7 @@ const inventoryRoute = require("./routes/inventoryRoute");
 const baseController = require("./controllers/baseController");
 const utilities = require("./utilities");
 const errorRoute = require("./routes/errorRoute");
-
+const accountRoute = require("./routes/accountRoute");
 /* ***********************
  * Middleware
  *************************/
@@ -65,6 +65,9 @@ app.use("/error", errorRoute);
 
 // Static page routes
 app.use(staticRoutes);
+
+//accountroute
+app.use("/account", accountRoute);
 
 // Home page
 app.get("/", utilities.handleErrors(baseController.buildHome));

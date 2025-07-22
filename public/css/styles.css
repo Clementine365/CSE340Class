@@ -172,3 +172,131 @@ footer {
     padding: 15px;
   }
 }
+
+/* =======================
+   Login Page Styles
+========================== */
+
+/* Container wrapping title, flash, form, and register link */
+.auth-form-container {
+  background-color: #1d3557; /* dark blue */
+  color: white;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 100%;
+  margin: 4rem auto;  /* center horizontally with some top margin */
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Title styling */
+.auth-form-container h1 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #a8dadc; /* soft cyan */
+}
+
+/* Flash message box (inside container) */
+.flash-notice {
+  background-color: #e63946; /* red for errors/notice */
+  color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(230, 57, 70, 0.7);
+  text-align: center;
+}
+
+/* Form styles inside container (no separate bg) */
+.auth-form {
+  background: transparent;
+  color: white;
+  padding: 0;
+  box-shadow: none;
+  width: 100%;
+  text-align: left;
+}
+
+/* Form groups spacing */
+.auth-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* Labels inside form */
+.auth-form label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #a8dadc;
+}
+
+/* Inputs */
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Input focus */
+.auth-form input:focus {
+  outline: none;
+  box-shadow: 0 0 6px 2px #a8dadc;
+}
+
+/* Submit button */
+.auth-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: white;
+  color: #1d3557;
+  font-weight: 700;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+  box-sizing: border-box;
+}
+
+.auth-form button:hover {
+  background-color: #f0f0f0;
+}
+
+/* Register link inside the container */
+.register-link {
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #a8dadc;
+}
+
+.register-link a {
+  color: #f1faee;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+  color: #a8dadc;
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  .auth-form-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem 2rem;
+  }
+  
+  .auth-form-container h1 {
+    font-size: 2rem;
+  }
+}

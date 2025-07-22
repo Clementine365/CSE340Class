@@ -1,0 +1,49 @@
+<!-- Page Title -->
+<title><%= title %></title>
+
+<div class="auth-form-container">
+  <!-- Heading -->
+  <h1><%= title %></h1>
+
+  <!-- Flash Messages -->
+  <% if (noticeMessages && noticeMessages.length > 0) { %>
+    <div class="flash flash-notice">
+      <% noticeMessages.forEach(msg => { %>
+        <p><%= msg %></p>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- Login Form -->
+  <form action="/account/login" method="post" class="auth-form">
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input 
+        type="email" 
+        name="email" 
+        id="email" 
+        required 
+        placeholder="Enter your email"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input 
+        type="password" 
+        name="password" 
+        id="password" 
+        required 
+        placeholder="Enter your password"
+      />
+    </div>
+
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- Registration Link -->
+  <p class="register-link">
+     No account? 
+    <a href="/account/register">SIGN-UP</a>
+  </p>
+</div>

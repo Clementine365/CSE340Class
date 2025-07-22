@@ -16,14 +16,8 @@
 
       <header>
         <h1>Welcome to CSE Motors!</h1>
-        <% const infoMessages = messages().info; %>
-        <% if (Array.isArray(infoMessages)) { %>
-          <div class="flash flash-info">
-            <% infoMessages.forEach(function(msg) { %>
-              <p><%= msg %></p>
-            <% }) %>
-          </div>
-        <% } %>
+        
+<%- messages() %>
       </header>
 
       <main>
