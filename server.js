@@ -12,21 +12,22 @@ const pool = require('./database/');
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("connect-flash");
-
+const bodyParser = require("body-parser");
 const app = express();
 
-// Serve static files from "public" directory
-app.use(express.static("public"));
-
+// Routes and Controllers
 const staticRoutes = require("./routes/static");
 const inventoryRoute = require("./routes/inventoryRoute");
+const accountRoute = require("./routes/accountRoute");
 const baseController = require("./controllers/baseController");
 const utilities = require("./utilities");
 const errorRoute = require("./routes/errorRoute");
-const accountRoute = require("./routes/accountRoute");
+
 /* ***********************
  * Middleware
  *************************/
+app.use(express.static("public"));
+
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
@@ -38,41 +39,30 @@ app.use(session({
   name: 'sessionId',
 }));
 
-
-
-// Enable flash messages
+// Flash messages
 app.use(flash());
-
-// Expose flash messages to views
 app.use((req, res, next) => {
   res.locals.messages = () => req.flash();
   next();
 });
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /* ***********************
  * View Engine and Templates
  *************************/
 app.set("view engine", "ejs");
 app.use(expressLayouts);
-app.set("layout", "./layouts/layout"); // layout file path
+app.set("layout", "./layouts/layout");
 
 /* ***********************
  * Routes
  *************************/
-
-// route for errors
 app.use("/error", errorRoute);
-
-// Static page routes
 app.use(staticRoutes);
-
-//accountroute
 app.use("/account", accountRoute);
-
-// Home page
 app.get("/", utilities.handleErrors(baseController.buildHome));
-
-// Inventory pages
 app.use("/inv", inventoryRoute);
 
 /* ***********************
@@ -89,7 +79,7 @@ app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav();
   const message = err.status === 404 
     ? err.message 
-    : 'Oh no! There was a crash. you can Maybe try a different route?';
+    : 'Oh no! There was a crash. Maybe try a different route?';
 
   console.error(`Error at: "${req.originalUrl}": ${err.message}`);
 
