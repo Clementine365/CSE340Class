@@ -1,6 +1,7 @@
-/* General Body Styles */
+/* General Body Styles - shared light blue background */
 body {
   font-family: var(--standard-font);
+  background-color: #add8e6; /* Light blue */
   background-image: url("/images/site/checkerboard.jpg");
   background-size: 50px 50px;
   background-repeat: repeat;
@@ -29,7 +30,7 @@ body {
   border: 3px solid cyan;
 }
 
-/* Reusable Content Box for classification/detail pages */
+/* Reusable Content Box */
 .content-box {
   background-color: white;
   padding: 20px;
@@ -80,7 +81,7 @@ nav a {
   border-radius: 5px;
 }
 
-/* Section for DMC Delorean */
+/* DMC Delorean Section */
 .delorean {
   display: flex;
   align-items: center;
@@ -174,34 +175,30 @@ footer {
 }
 
 /* =======================
-   Login Page Styles
-========================== */
-
-/* Container wrapping title, flash, form, and register link */
+   Login View Styles
+========================= */
 .auth-form-container {
-  background-color: #1d3557; /* dark blue */
+  background-color: #1d3557;
   color: white;
   padding: 2rem 3rem;
   border-radius: 15px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   max-width: 400px;
   width: 100%;
-  margin: 4rem auto;  /* center horizontally with some top margin */
+  margin: 4rem auto;
   box-sizing: border-box;
   text-align: center;
 }
 
-/* Title styling */
 .auth-form-container h1 {
   margin-bottom: 2rem;
   font-weight: 700;
   font-size: 2.5rem;
-  color: #a8dadc; /* soft cyan */
+  color: #a8dadc;
 }
 
-/* Flash message box (inside container) */
 .flash-notice {
-  background-color: #e63946; /* red for errors/notice */
+  background-color: #e63946;
   color: white;
   border-radius: 10px;
   padding: 1rem;
@@ -211,7 +208,6 @@ footer {
   text-align: center;
 }
 
-/* Form styles inside container (no separate bg) */
 .auth-form {
   background: transparent;
   color: white;
@@ -221,12 +217,10 @@ footer {
   text-align: left;
 }
 
-/* Form groups spacing */
 .auth-form .form-group {
   margin-bottom: 1.5rem;
 }
 
-/* Labels inside form */
 .auth-form label {
   display: block;
   font-weight: 700;
@@ -234,7 +228,6 @@ footer {
   color: #a8dadc;
 }
 
-/* Inputs */
 .auth-form input {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -245,13 +238,11 @@ footer {
   transition: box-shadow 0.3s ease;
 }
 
-/* Input focus */
 .auth-form input:focus {
   outline: none;
   box-shadow: 0 0 6px 2px #a8dadc;
 }
 
-/* Submit button */
 .auth-form button {
   width: 100%;
   padding: 0.75rem;
@@ -270,33 +261,88 @@ footer {
   background-color: #f0f0f0;
 }
 
-/* Register link inside the container */
 .register-link {
   margin-top: 2rem;
   font-size: 1rem;
   color: #a8dadc;
 }
 
-.register-link a {
-  color: #f1faee;
+/* =========================
+   Register View Styles
+========================= */
+.register-form-container {
+  background-color: white;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  width: 100%;
+  margin: 4rem auto;
+  box-sizing: border-box;
+  border: 3px solid cyan;
+}
+
+.register-form-container h1 {
+  margin-bottom: 2rem;
   font-weight: 700;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  font-size: 2rem;
+  color: #1d3557;
+  text-align: center;
 }
 
-.register-link a:hover {
-  text-decoration: underline;
-  color: #a8dadc;
+.register-form {
+  text-align: left;
 }
 
-/* Responsive adjustment */
+.register-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.register-form label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1d3557;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.register-form input:focus {
+  outline: none;
+  border-color: #1d3557;
+  box-shadow: 0 0 4px #a8dadc;
+}
+
+.register-form button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1d3557;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-form button:hover {
+  background-color: #457b9d;
+}
+
 @media (max-width: 480px) {
-  .auth-form-container {
+  .register-form-container {
     margin: 2rem 1rem;
     padding: 1.5rem 2rem;
   }
-  
-  .auth-form-container h1 {
-    font-size: 2rem;
+
+  .register-form-container h1 {
+    font-size: 1.8rem;
   }
 }

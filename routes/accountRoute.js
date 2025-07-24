@@ -15,5 +15,11 @@ router.get(
   utilities.handleErrors(accountsController.buildLogin)
 );
 
+// Route to serve the registration view at /account/register
+router.get(
+  "/register",
+  utilities.handleErrors(accountsController.buildRegister)
+);
+
 // Export the router for use in server.js
 module.exports = router;

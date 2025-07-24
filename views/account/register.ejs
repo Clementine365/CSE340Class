@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="register-form-container">
+    <h1><%= title %></h1>
+
+    <!-- Flash Messages -->
+    <% if (messages().notice && messages().notice.length > 0) { %>
+      <div class="flash-notice">
+        <% messages().notice.forEach(msg => { %>
+          <p><%= msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- Registration Form -->
+    <form class="register-form" id="registerForm" action="/account/register" method="post">
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" id="first_name" name="first_name" required 
+               value="<%= typeof first_name !== 'undefined' ? first_name : '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input type="text" id="last_name" name="last_name" required 
+               value="<%= typeof last_name !== 'undefined' ? last_name : '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required 
+               value="<%= typeof email !== 'undefined' ? email : '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" required
+                 title="Min 12 characters, 1 capital letter, 1 number, 1 special character">
+          <button type="button" id="togglePassword">👁️‍🗨️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-button">Register</button>
+    </form>
+  </div>
+
+  <script>
+    // The toggle password visibility
+    document.getElementById("togglePassword").addEventListener("click", function () {
+      const passwordInput = document.getElementById("password");
+      const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+      passwordInput.setAttribute("type", type);
+    });
+  </script>
+</body>
+</html>
