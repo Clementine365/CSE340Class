@@ -29,12 +29,24 @@
 
     <div class="form-group">
       <label for="password">Password</label>
+
+      <!-- Password rule reminder -->
+      <div class="password-rules">
+        Passwords must be at least 12 characters and contain at least:<br>
+        • 1 uppercase letter<br>
+        • 1 lowercase letter<br>
+        • 1 number<br>
+        • 1 special character
+      </div>
+
       <input 
         type="password" 
         name="password" 
         id="password" 
         required 
         placeholder="Enter your password"
+        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+        title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
       />
     </div>
 
@@ -43,7 +55,7 @@
 
   <!-- Registration Link -->
   <p class="register-link">
-     No account? 
+    No account? 
     <a href="/account/register">SIGN-UP</a>
   </p>
 </div>
