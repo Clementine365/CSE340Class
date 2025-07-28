@@ -7,11 +7,13 @@ const accountModel = require("../models/account-model");
  * *************************************** */
 async function buildLogin(req, res, next) {
   let nav = await utilities.getNav();
+  const noticeMessages = req.flash("notice") || []; // Ensure it's defined and an array
 
   res.render("account/login", {
     title: "Login",
     nav,
-    errors: null, // Ensure 'errors' exists in the view
+    errors: null,
+    noticeMessages, 
   });
 }
 
@@ -20,11 +22,13 @@ async function buildLogin(req, res, next) {
  * *************************************** */
 async function buildRegister(req, res, next) {
   let nav = await utilities.getNav();
+  const noticeMessages = req.flash("notice") || [];
 
   res.render("account/register", {
     title: "Register",
     nav,
-    errors: null, // Required by EJS to avoid errors
+    errors: null,
+    noticeMessages, // Optional: in case you display notices here too
   });
 }
 
@@ -52,6 +56,7 @@ async function registerAccount(req, res) {
       title: "Login",
       nav,
       errors: null,
+      noticeMessages: req.flash("notice"), 
     });
   } else {
     req.flash("notice", "Sorry, the registration failed.");
@@ -59,6 +64,7 @@ async function registerAccount(req, res) {
       title: "Register",
       nav,
       errors: null,
+      noticeMessages: req.flash("notice"), 
     });
   }
 }

@@ -14,8 +14,17 @@
     </div>
   <% } %>
 
+  <!-- Validation Errors -->
+  <% if (errors) { %>
+    <ul class="notice">
+      <% errors.array().forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
   <!-- Login Form -->
-  <form action="/account/login" method="post" class="auth-form">
+  <form id="loginForm" action="/account/login" method="post" class="auth-form">
     <div class="form-group">
       <label for="email">Email address</label>
       <input 
@@ -24,6 +33,7 @@
         id="email" 
         required 
         placeholder="Enter your email"
+        value="<%= typeof email !== 'undefined' ? email : '' %>"
       />
     </div>
 
