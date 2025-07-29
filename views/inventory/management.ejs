@@ -1,0 +1,15 @@
+<title>Inventory Management</title>
+
+<div class="management-container">
+  <h1>Inventory Management</h1>
+
+  <!-- Flash Message -->
+  <% if (message) { %>
+    <div class="flash-message"><%= message %></div>
+  <% } %>
+
+  <ul class="management-links">
+    <li><a href="/inv/add-classification">Add New Classification</a></li>
+    <li><a href="/inv/add-inventory">Add New Inventory</a></li>
+  </ul>
+</div>

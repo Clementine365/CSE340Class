@@ -1,10 +1,13 @@
 const pool = require("../database/");
+const bcrypt = require("bcrypt");
 
-/* *****************************
- *   Register new account
- * *************************** */
+/* ****************************
+ *   Register new account (hashed password)
+ * **************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password) {
   try {
+    const hashedPassword = await bcrypt.hash(account_password, 12);
+
     const sql = `
       INSERT INTO account (
         account_firstname,
@@ -15,34 +18,64 @@ async function registerAccount(account_firstname, account_lastname, account_emai
       )
       VALUES ($1, $2, $3, $4, 'Client')
       RETURNING *`;
+
     const result = await pool.query(sql, [
       account_firstname,
       account_lastname,
       account_email,
-      account_password,
+      hashedPassword,
     ]);
-    return result.rows[0]; 
+
+    return result.rows[0];
   } catch (error) {
     console.error("Register Error:", error);
     return null;
   }
 }
 
-/* **********************
+/* ****************************
  *   Check for existing email
- * ********************* */
+ * **************************** */
 async function checkExistingEmail(account_email) {
   try {
     const sql = "SELECT * FROM account WHERE account_email = $1";
-    const email = await pool.query(sql, [account_email]);
-    return email.rowCount; // > 0 means email exists
+    const result = await pool.query(sql, [account_email]);
+    return result.rowCount; // true if > 0
   } catch (error) {
     console.error("Email Check Error:", error);
-    return error.message;
+    return false;
+  }
+}
+
+/* ****************************
+ *   Get user by email (for login)
+ * **************************** */
+async function getUserByEmail(account_email) {
+  try {
+    const sql = "SELECT * FROM account WHERE account_email = $1";
+    const result = await pool.query(sql, [account_email]);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Get User Error:", error);
+    return null;
+  }
+}
+
+/* ****************************
+ *   Compare plain and hashed password
+ * **************************** */
+async function checkPassword(user, inputPassword) {
+  try {
+    return await bcrypt.compare(inputPassword, user.account_password);
+  } catch (error) {
+    console.error("Password Compare Error:", error);
+    return false;
   }
 }
 
 module.exports = {
   registerAccount,
-  checkExistingEmail, 
+  checkExistingEmail,
+  getUserByEmail,
+  checkPassword,
 };

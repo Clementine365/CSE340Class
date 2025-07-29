@@ -1,12 +1,10 @@
-<!-- views/inventory/classification.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title><%= title ? title : 'Inventory' %></title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
   <div class="container">
@@ -15,11 +13,17 @@
     </header>
 
     <main class="content-box">
+
       <% if (title) { %>
+        <!-- Add Vehicle Link -->
+        <p><a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a></p>
+
         <%- grid %>
+
       <% } else { %>
         <p>No classification title found. <a href="/">Return to Home</a></p>
       <% } %>
+
     </main>
 
     <footer>

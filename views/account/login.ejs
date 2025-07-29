@@ -1,71 +1,86 @@
-<!-- Page Title -->
-<title><%= title %></title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="auth-form-container">
+    <h1><%= title %></h1>
 
-<div class="auth-form-container">
-  <!-- Heading -->
-  <h1><%= title %></h1>
+    <!-- Notice Flash Messages -->
+    <% if (noticeMessages && noticeMessages.length > 0) { %>
+      <div class="flash flash-notice">
+        <% noticeMessages.forEach(msg => { %>
+          <p><%= msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
 
-  <!-- Flash Messages -->
-  <% if (noticeMessages && noticeMessages.length > 0) { %>
-    <div class="flash flash-notice">
-      <% noticeMessages.forEach(msg => { %>
-        <p><%= msg %></p>
-      <% }) %>
-    </div>
-  <% } %>
+    <!-- Error Flash Messages -->
+    <% if (errorMessages && errorMessages.length > 0) { %>
+      <div class="flash flash-error">
+        <% errorMessages.forEach(msg => { %>
+          <p><%= msg %></p>
+        <% }) %>
+      </div>
+    <% } %>
 
-  <!-- Validation Errors -->
-  <% if (errors) { %>
-    <ul class="notice">
-      <% errors.array().forEach(error => { %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
-  <% } %>
+    <!-- Validation Errors (from errors object, optional) -->
+    <% if (errors && errors.array().length > 0) { %>
+      <ul class="notice">
+        <% errors.array().forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
 
-  <!-- Login Form -->
-  <form id="loginForm" action="/account/login" method="post" class="auth-form">
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input 
-        type="email" 
-        name="email" 
-        id="email" 
-        required 
-        placeholder="Enter your email"
-        value="<%= typeof email !== 'undefined' ? email : '' %>"
-      />
-    </div>
-
-    <div class="form-group">
-      <label for="password">Password</label>
-
-      <!-- Password rule reminder -->
-      <div class="password-rules">
-        Passwords must be at least 12 characters and contain at least:<br>
-        • 1 uppercase letter<br>
-        • 1 lowercase letter<br>
-        • 1 number<br>
-        • 1 special character
+    <!-- Login Form -->
+    <form id="loginForm" action="/account/login" method="post" class="auth-form">
+      <div class="form-group">
+        <label for="account_email">Email address</label>
+        <input 
+          type="email" 
+          name="account_email" 
+          id="account_email" 
+          required 
+          placeholder="Enter your email"
+          value="<%= typeof account_email !== 'undefined' ? account_email : '' %>"
+        />
       </div>
 
-      <input 
-        type="password" 
-        name="password" 
-        id="password" 
-        required 
-        placeholder="Enter your password"
-        pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-        title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
-      />
-    </div>
+      <div class="form-group">
+        <label for="account_password">Password</label>
 
-    <button type="submit">Login</button>
-  </form>
+        <!-- Password rule reminder -->
+        <div class="password-rules">
+          Passwords must be at least 12 characters and contain at least:<br />
+          • 1 uppercase letter<br />
+          • 1 lowercase letter<br />
+          • 1 number<br />
+          • 1 special character
+        </div>
 
-  <!-- Registration Link -->
-  <p class="register-link">
-    No account? 
-    <a href="/account/register">SIGN-UP</a>
-  </p>
-</div>
+        <input 
+          type="password" 
+          name="account_password" 
+          id="account_password" 
+          required 
+          placeholder="Enter your password"
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+          title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
+        />
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p class="register-link">
+      No account? <a href="/account/register">SIGN-UP</a>
+    </p>
+  </div>
+</body>
+</html>

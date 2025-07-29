@@ -1,47 +1,130 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
+const { validationResult } = require("express-validator");
 
-const invCont = {};
+const invController = {};
 
-/* ***************************
- *  Build inventory by classification view
- * ************************** */
-invCont.buildByClassificationId = async function (req, res, next) {
-  const classification_id = req.params.classificationId;
-  const data = await invModel.getInventoryByClassificationId(classification_id);
-
-  if (!data || data.length === 0) {
-    return res.status(404).render("errors/404", { title: "No vehicles found" });
-  }
-
-  const grid = await utilities.buildClassificationGrid(data);
+/* GET - Render Add Classification form */
+invController.buildAddClassification = async (req, res) => {
   let nav = await utilities.getNav();
-  const className = data[0].classification_name;
-  res.render("./inventory/classification", {
-    title: className + " vehicles",
+  res.render("inventory/add-classification", {
+    title: "Add New Classification",
     nav,
-    grid,
+    errors: null,
+    message: null,
+    classification_name: "",
   });
 };
 
-/* ***************************
- *  Build vehicle detail view by inventory ID
- * ************************** */
-invCont.buildByInventoryId = async function (req, res, next) {
-  const invId = req.params.invId;
-  const vehicleData = await invModel.getVehicleById(invId);
-
-  if (!vehicleData) {
-    return res.status(404).render("errors/404", { title: "Vehicle Not Found" });
-  }
-
+/* POST - Process Add Classification form */
+invController.addClassification = async (req, res) => {
+  const { classification_name } = req.body;
+  const errors = validationResult(req);
   let nav = await utilities.getNav();
 
-  res.render("inventory/detail", {
-    title: `${vehicleData.inv_make} ${vehicleData.inv_model}`,
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-classification", {
+      title: "Add New Classification",
+      nav,
+      errors,
+      message: null,
+      classification_name,
+    });
+  }
+
+  try {
+    const result = await invModel.addClassification(classification_name);
+    if (result) {
+      req.flash("notice", "New classification added successfully.");
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Insert failed");
+    }
+  } catch (err) {
+    console.error(err);
+    res.render("inventory/add-classification", {
+      title: "Add New Classification",
+      nav,
+      message: "Error adding classification.",
+      errors: null,
+      classification_name,
+    });
+  }
+};
+
+/* GET - Display inventory items by classification ID with built HTML grid */
+invController.buildInventoryByClassificationId = async (req, res, next) => {
+  const classificationId = req.params.classificationId;
+  try {
+    const data = await invModel.getInventoryByClassificationId(classificationId);
+    let nav = await utilities.getNav();
+
+    const grid = await utilities.buildClassificationGrid(data);
+
+    res.render("inventory/classification", {
+      title: "Vehicles",
+      nav,
+      classificationId,
+      inventory: data,
+      grid,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* GET - Render Add Inventory (Vehicle) form */
+invController.buildAddInventory = async (req, res) => {
+  let nav = await utilities.getNav();
+  const classifications = await invModel.getClassifications();
+
+  res.render("inventory/add-inventory", {
+    title: "Add Vehicle",
     nav,
-    vehicle: vehicleData, // ✅ passes actual vehicle object
+    classifications,
+    errors: null,
+    message: null,
+    vehicle: {},
   });
 };
 
-module.exports = invCont;
+/* POST - Process Add Inventory form */
+invController.addInventory = async (req, res) => {
+  const errors = validationResult(req);
+  let nav = await utilities.getNav();
+  const classifications = await invModel.getClassifications();
+  const vehicle = req.body;
+
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-inventory", {
+      title: "Add Vehicle",
+      nav,
+      classifications,
+      vehicle,
+      errors,
+      message: null,
+    });
+  }
+
+  try {
+    const result = await invModel.addInventory(vehicle); // Make sure this exists in your model
+    if (result) {
+      req.flash("notice", "New vehicle added successfully.");
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Insert failed");
+    }
+  } catch (err) {
+    console.error(err);
+    res.render("inventory/add-inventory", {
+      title: "Add Vehicle",
+      nav,
+      classifications,
+      vehicle,
+      message: "Error adding vehicle.",
+      errors: null,
+    });
+  }
+};
+
+module.exports = invController;

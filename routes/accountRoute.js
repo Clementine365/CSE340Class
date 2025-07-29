@@ -1,4 +1,3 @@
-// Required external resources
 const express = require("express");
 const router = express.Router();
 const utilities = require("../utilities");
@@ -10,35 +9,32 @@ router.get("/", (req, res) => {
   res.redirect("/account/login");
 });
 
-// Route to serve the login view at /account/login
+// Route to serve the login view
 router.get(
   "/login",
   utilities.handleErrors(accountsController.buildLogin)
 );
 
-// Route to serve the registration view at /account/register
+// Route to serve the registration view
 router.get(
   "/register",
   utilities.handleErrors(accountsController.buildRegister)
 );
 
-// Process the registration data with validation
+// Process registration with validation and error handling
 router.post(
   "/register",
-  regValidate.registrationRules(), // Step 1: Apply registration validation rules
-  regValidate.checkRegData,        // Step 2: Check validation results
-  utilities.handleErrors(accountsController.registerAccount) // Step 3: Call controller
+  regValidate.registrationRules(),
+  regValidate.checkRegData,
+  utilities.handleErrors(accountsController.registerAccount)
 );
 
-// Process the login attempt with validation
+// Process login with validation and error handling
 router.post(
   "/login",
-  regValidate.loginRules(),    // Step 1: Apply login validation rules
-  regValidate.checkLoginData,  // Step 2: Check login validation results
-  (req, res) => {
-    res.status(200).send("login process"); // Step 3: Placeholder
-  }
+  regValidate.loginRules(),       // Login validation rules
+  regValidate.checkLoginData,     // Validation results check
+  utilities.handleErrors(accountsController.processLogin)  // Actual login logic
 );
 
-// Export the router for use in server.js
 module.exports = router;

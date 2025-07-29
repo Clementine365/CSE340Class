@@ -1,18 +1,17 @@
-/* ******************************************
- * This server.js file is the primary file of the 
- * application. It is used to control the project.
- ******************************************/
+/*******************************************
+ * Primary server file for CSE340 Project.
+ * Handles configuration, routing, middleware.
+ *******************************************/
 
-/* ***********************
- * Require Statements
- *************************/
 require("dotenv").config();
-const session = require("express-session");
-const pool = require('./database/');
 const express = require("express");
-const expressLayouts = require("express-ejs-layouts");
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
 const flash = require("connect-flash");
 const bodyParser = require("body-parser");
+const expressLayouts = require("express-ejs-layouts");
+const cookieParser = require("cookie-parser");  // Added cookie-parser
+const pool = require("./database/");
 const app = express();
 
 // Routes and Controllers
@@ -20,37 +19,64 @@ const staticRoutes = require("./routes/static");
 const inventoryRoute = require("./routes/inventoryRoute");
 const accountRoute = require("./routes/accountRoute");
 const baseController = require("./controllers/baseController");
-const utilities = require("./utilities");
 const errorRoute = require("./routes/errorRoute");
+const utilities = require("./utilities");
 
 /* ***********************
  * Middleware
  *************************/
+
+// Serve static files from /public
 app.use(express.static("public"));
 
-app.use(session({
-  store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: 'sessionId',
-}));
+// Parse cookies
+app.use(cookieParser());
+
+// Session configuration (updated)
+app.use(
+  session({
+    store: new pgSession({
+      createTableIfMissing: true,
+      pool,
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    name: "sessionId",
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 2, // 2 hours
+      httpOnly: true,
+      secure: false, // set to true if using HTTPS in production
+      sameSite: true,
+    },
+  })
+);
 
 // Flash messages
 app.use(flash());
+
+// Flash messages helper for views
 app.use((req, res, next) => {
-  res.locals.messages = () => req.flash();
+  res.locals.messages = () => ({
+    notice: req.flash("notice"),
+    error: req.flash("error"),
+  });
   next();
 });
 
+// Body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Debug middleware to log cookies and session (optional, remove in production)
+app.use((req, res, next) => {
+  console.log("Cookies:", req.cookies);
+  console.log("Session:", req.session);
+  next();
+});
+
 /* ***********************
- * View Engine and Templates
+ * View Engine
  *************************/
 app.set("view engine", "ejs");
 app.use(expressLayouts);
@@ -69,7 +95,7 @@ app.use("/inv", inventoryRoute);
  * 404 Not Found Middleware
  *************************/
 app.use((req, res, next) => {
-  next({ status: 404, message: 'Sorry, seems like we lost that page.' });
+  next({ status: 404, message: "Sorry, seems like we lost that page." });
 });
 
 /* ***********************
@@ -77,25 +103,26 @@ app.use((req, res, next) => {
  *************************/
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav();
-  const message = err.status === 404 
-    ? err.message 
-    : 'Oh no! There was a crash. Maybe try a different route?';
+  const message =
+    err.status === 404
+      ? err.message
+      : "Oh no! There was a crash. Maybe try a different route?";
 
-  console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+  console.error(`Error at "${req.originalUrl}": ${err.message}`);
 
   res.status(err.status || 500).render("errors/error", {
-    title: err.status || 'Server Error',
+    title: err.status || "Server Error",
     message,
-    nav
+    nav,
   });
 });
 
 /* ***********************
  * Start Server
  *************************/
-const port = process.env.PORT || 5500;
-const host = process.env.HOST || 'localhost';
+const port = process.env.PORT || 5600;
+const host = process.env.HOST || "localhost";
 
 app.listen(port, () => {
-  console.log(`App listening on http://${host}:${port}`);
+  console.log(`App listening at http://${host}:${port}`);
 });

@@ -53,7 +53,7 @@ const registrationRules = () => {
 };
 
 /* ******************************
- * Check data and return errors or continue to registration
+ * Check registration data and return errors or continue
  * ***************************** */
 const checkRegData = async (req, res, next) => {
   const { account_firstname, account_lastname, account_email } = req.body;
@@ -67,6 +67,8 @@ const checkRegData = async (req, res, next) => {
       account_firstname,
       account_lastname,
       account_email,
+      errorMessages: errors.array().map(err => err.msg),
+      noticeMessages: req.flash("notice"),
     });
     return;
   }
@@ -78,16 +80,16 @@ const checkRegData = async (req, res, next) => {
  * ********************************* */
 const loginRules = () => {
   return [
-    body("email")
+    body("account_email")
       .trim()
       .isEmail()
       .normalizeEmail()
       .withMessage("A valid email is required."),
 
-    body("password")
+    body("account_password")
       .trim()
       .notEmpty()
-      .withMessage("Password is required.")
+      .withMessage("Password is required."),
   ];
 };
 
@@ -95,7 +97,7 @@ const loginRules = () => {
  * Check login data and return errors or continue
  * ***************************** */
 const checkLoginData = async (req, res, next) => {
-  const { email } = req.body;
+  const { account_email } = req.body;
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
@@ -103,12 +105,25 @@ const checkLoginData = async (req, res, next) => {
       errors,
       title: "Login",
       nav,
-      email,
+      account_email,
+      errorMessages: errors.array().map(err => err.msg),
+      noticeMessages: req.flash("notice"),
     });
     return;
   }
   next();
 };
+
+/* **********************************
+ *  Classification Name Validation Rule
+ * ********************************* */
+const classificationRules = [
+  body("classification_name")
+    .trim()
+    .isLength({ min: 3 })
+    .isAlpha()
+    .withMessage("Classification must be at least 3 letters and alphabetic."),
+];
 
 // Export all validation functions
 module.exports = {
@@ -116,4 +131,5 @@ module.exports = {
   checkRegData,
   loginRules,
   checkLoginData,
+  classificationRules,
 };

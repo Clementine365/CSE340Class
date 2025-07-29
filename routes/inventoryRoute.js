@@ -1,20 +1,56 @@
-// The Required Resources
-const express = require("express")
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const invController = require("../controllers/invController")
-const utilities = require("../utilities") 
+const invController = require("../controllers/invController");
+const checkLogin = require("../utilities/check-login");
+const validate = require("../utilities/inventory-validation");
 
-// Route to build inventory by classification view
+// =====================
+// CLASSIFICATION ROUTES
+// =====================
+
+// GET - Show Add Classification form
+router.get(
+  "/add-classification",
+  checkLogin,
+  invController.buildAddClassification
+);
+
+// POST - Process Add Classification form
+router.post(
+  "/add-classification",
+  checkLogin,
+  validate.classificationRules(),
+  validate.checkAddClassification,  // Correct middleware here
+  invController.addClassification
+);
+
+// ==========================
+// VEHICLE INVENTORY ROUTES
+// ==========================
+
+// GET - Show Add Vehicle form
+router.get(
+  "/add-inventory",
+  checkLogin,
+  invController.buildAddInventory
+);
+
+// POST - Process Add Vehicle form
+router.post(
+  "/add-inventory",
+  checkLogin,
+  validate.addInventoryRules(),
+  validate.checkAddInventory,  // Correct middleware here
+  invController.addInventory
+);
+
+// =============================
+// VIEW BY CLASSIFICATION ROUTE
+// =============================
 router.get(
   "/type/:classificationId",
-  utilities.handleErrors(invController.buildByClassificationId)
-)
+  invController.buildInventoryByClassificationId
+);
 
-// Route to build vehicle detail view
-router.get(
-  "/detail/:invId",
-  utilities.handleErrors(invController.buildByInventoryId)
-)
-
-module.exports = router
+module.exports = router;
