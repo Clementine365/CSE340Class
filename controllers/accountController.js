@@ -74,20 +74,17 @@ async function registerAccount(req, res) {
 }
 
 /* ****************************************
- * Process Login (fully updated)
+ * Process Login (Updated Redirect)
  * *************************************** */
 async function processLogin(req, res) {
   const nav = await utilities.getNav();
   const { account_email, account_password } = req.body;
 
   try {
-    console.log("Attempting login for:", account_email);
     const user = await accountModel.getUserByEmail(account_email);
 
-    console.log("User found:", user ? "Yes" : "No");
     if (!user) {
       req.flash("notice", "Invalid login credentials.");
-      console.warn(`Login failed: No user found for email: ${account_email}`);
       return res.status(401).render("account/login", {
         title: "Login",
         nav,
@@ -97,13 +94,10 @@ async function processLogin(req, res) {
       });
     }
 
-    console.log("Comparing password:", account_password, "with hash:", user.account_password);
     const passwordMatch = await accountModel.checkPassword(user, account_password);
-    console.log("Password match:", passwordMatch);
 
     if (!passwordMatch) {
       req.flash("notice", "Invalid login credentials.");
-      console.warn(`Login failed: Incorrect password for email: ${account_email}`);
       return res.status(401).render("account/login", {
         title: "Login",
         nav,
@@ -113,7 +107,7 @@ async function processLogin(req, res) {
       });
     }
 
-    // this Save account info in session
+    // Save account info in session
     req.session.account = {
       account_id: user.account_id,
       account_firstname: user.account_firstname,
@@ -122,11 +116,8 @@ async function processLogin(req, res) {
       account_type: user.account_type,
     };
 
-    console.log("Login successful:", req.session.account);
-
-    // Redirect to inventory add page
-    return res.redirect("/inv/add-inventory");
-
+    //  Redirect to success page after login
+    return res.redirect("/account/success");
 
   } catch (error) {
     console.error("Login error:", error);

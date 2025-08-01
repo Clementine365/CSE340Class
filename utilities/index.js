@@ -1,5 +1,5 @@
 const invModel = require("../models/inventory-model");
-const checkLogin = require("./check-login"); // this  imports checkLogin middleware
+const checkLogin = require("./check-login"); // this imports checkLogin middleware
 const Util = {};
 
 /* ************************
@@ -26,6 +26,18 @@ Util.getNav = async function (req, res, next) {
     list += "</li>";
   });
   list += "</ul>";
+  return list;
+};
+
+/* **************************************
+ * Build the classification dropdown list HTML for forms
+ * ************************************ */
+Util.buildClassificationList = function (classifications, selectedId = null) {
+  let list = "";
+  classifications.forEach((classification) => {
+    const selected = selectedId == classification.classification_id ? "selected" : "";
+    list += `<option value="${classification.classification_id}" ${selected}>${classification.classification_name}</option>`;
+  });
   return list;
 };
 

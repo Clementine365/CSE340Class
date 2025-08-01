@@ -2,27 +2,28 @@ const express = require("express");
 const router = express.Router();
 
 const invController = require("../controllers/invController");
-const checkLogin = require("../utilities/check-login");
 const validate = require("../utilities/inventory-validation");
+
+// ============================
+// MAIN INVENTORY PAGE ROUTE
+// ============================
+
+// GET - Show Inventory Management Page
+router.get("/", invController.buildInventory);
 
 // =====================
 // CLASSIFICATION ROUTES
 // =====================
 
 // GET - Show Add Classification form
-router.get(
-  "/add-classification",
-  checkLogin,
-  invController.buildAddClassification
-);
+router.get("/add-classification", invController.buildAddClassification);
 
-// POST - Process Add Classification form
+// POST - Process Add Classification form with validation
 router.post(
   "/add-classification",
-  checkLogin,
-  validate.classificationRules(),
-  validate.checkAddClassification,  // Correct middleware here
-  invController.addClassification
+  validate.classificationRules(),       // Client-side validation rules
+  validate.checkAddClassification,      // Server-side validation handler
+  invController.addClassification       // Controller logic
 );
 
 // ==========================
@@ -30,27 +31,20 @@ router.post(
 // ==========================
 
 // GET - Show Add Vehicle form
-router.get(
-  "/add-inventory",
-  checkLogin,
-  invController.buildAddInventory
-);
+router.get("/add-inventory", invController.buildAddInventory);
 
-// POST - Process Add Vehicle form
+// POST - Process Add Vehicle form with validation
 router.post(
   "/add-inventory",
-  checkLogin,
-  validate.addInventoryRules(),
-  validate.checkAddInventory,  // Correct middleware here
-  invController.addInventory
+  validate.addInventoryRules(),         // Client-side validation rules
+  validate.checkAddInventory,           // Server-side validation handler
+  invController.addInventory            // Controller logic
 );
 
 // =============================
 // VIEW BY CLASSIFICATION ROUTE
 // =============================
-router.get(
-  "/type/:classificationId",
-  invController.buildInventoryByClassificationId
-);
+
+router.get("/type/:classificationId", invController.buildInventoryByClassificationId);
 
 module.exports = router;
