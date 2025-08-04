@@ -17,48 +17,48 @@ function addInventoryRules() {
       .notEmpty()
       .withMessage("Classification is required."),
 
-    body("make")
+    body("inv_make")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Make is required.")
       .matches(/^[A-Za-z0-9\s\-]+$/)
       .withMessage("Make must contain letters, numbers, spaces, or hyphens only."),
 
-    body("model")
+    body("inv_model")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Model is required.")
       .matches(/^[A-Za-z0-9\s\-]+$/)
       .withMessage("Model must contain letters, numbers, spaces, or hyphens only."),
 
-    body("description")
+    body("inv_description")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Description is required."),
 
-    body("image")
+    body("inv_image")
       .optional({ checkFalsy: true })
       .isURL()
       .withMessage("Image path must be a valid URL or left blank."),
 
-    body("thumbnail")
+    body("inv_thumbnail")
       .optional({ checkFalsy: true })
       .isURL()
       .withMessage("Thumbnail path must be a valid URL or left blank."),
 
-    body("price")
+    body("inv_price")
       .isFloat({ min: 0 })
       .withMessage("Price must be a positive number."),
 
-    body("year")
+    body("inv_year")
       .isInt({ min: 1886, max: 2100 })
       .withMessage("Year must be between 1886 and 2100."),
 
-    body("miles")
+    body("inv_miles")
       .isInt({ min: 0 })
       .withMessage("Miles must be a positive integer."),
 
-    body("color")
+    body("inv_color")
       .trim()
       .matches(/^[A-Za-z\s]{1,30}$/)
       .withMessage("Color must contain letters and spaces only, max 30 characters."),
@@ -84,12 +84,12 @@ function checkAddClassification(req, res, next) {
 function checkAddInventory(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Make sure to provide classificationList in the render context if you use it in the form
+    // Ensure classificationList is passed if your form uses it
     return res.status(400).render("inventory/add-inventory", {
       title: "Add Vehicle",
       errors: errors,
       message: null,
-      classificationList: req.classificationList || null, // you might need to load this in your controller before render
+      classificationList: req.classificationList || null,
       ...req.body,
       nav: req.nav || null,
     });

@@ -26,100 +26,100 @@
       </select>
 
       <!-- Make -->
-      <label for="make">Make:</label>
+      <label for="inv_make">Make:</label>
       <input 
         type="text" 
-        id="make" 
-        name="make" 
+        id="inv_make" 
+        name="inv_make" 
         required 
         pattern="^[A-Za-z0-9\s\-]{1,50}$" 
         title="Letters, numbers, hyphens, and spaces only. Max 50 characters."
-        value="<%= typeof make !== 'undefined' ? make : '' %>"
+        value="<%= typeof inv_make !== 'undefined' ? inv_make : '' %>"
       >
 
       <!-- Model -->
-      <label for="model">Model:</label>
+      <label for="inv_model">Model:</label>
       <input 
         type="text" 
-        id="model" 
-        name="model" 
+        id="inv_model" 
+        name="inv_model" 
         required 
         pattern="^[A-Za-z0-9\s\-]{1,50}$" 
         title="Letters, numbers, hyphens, and spaces only. Max 50 characters."
-        value="<%= typeof model !== 'undefined' ? model : '' %>"
+        value="<%= typeof inv_model !== 'undefined' ? inv_model : '' %>"
       >
 
       <!-- Description -->
-      <label for="description">Description:</label>
+      <label for="inv_description">Description:</label>
       <textarea 
-        id="description" 
-        name="description" 
+        id="inv_description" 
+        name="inv_description" 
         required
-      ><%= typeof description !== 'undefined' ? description : '' %></textarea>
+      ><%= typeof inv_description !== 'undefined' ? inv_description : '' %></textarea>
 
       <!-- Image Path -->
-      <label for="image">Image Path:</label>
+      <label for="inv_image">Image Path:</label>
       <input 
         type="text" 
-        id="image" 
-        name="image" 
-        value="<%= typeof image !== 'undefined' ? image : '/images/vehicles/no-image.png' %>"
+        id="inv_image" 
+        name="inv_image" 
+        value="<%= typeof inv_image !== 'undefined' ? inv_image : '/images/vehicles/no-image.png' %>"
       >
 
       <!-- Thumbnail Path -->
-      <label for="thumbnail">Thumbnail Path:</label>
+      <label for="inv_thumbnail">Thumbnail Path:</label>
       <input 
         type="text" 
-        id="thumbnail" 
-        name="thumbnail" 
-        value="<%= typeof thumbnail !== 'undefined' ? thumbnail : '/images/vehicles/no-image-tn.png' %>"
+        id="inv_thumbnail" 
+        name="inv_thumbnail" 
+        value="<%= typeof inv_thumbnail !== 'undefined' ? inv_thumbnail : '/images/vehicles/no-image-tn.png' %>"
       >
 
       <!-- Price -->
-      <label for="price">Price:</label>
+      <label for="inv_price">Price:</label>
       <input 
         type="number" 
         step="0.01" 
-        id="price" 
-        name="price" 
+        id="inv_price" 
+        name="inv_price" 
         required 
         min="0"
-        value="<%= typeof price !== 'undefined' ? price : '' %>"
+        value="<%= typeof inv_price !== 'undefined' ? inv_price : '' %>"
       >
 
       <!-- Year -->
-      <label for="year">Year:</label>
+      <label for="inv_year">Year:</label>
       <input 
         type="number" 
-        id="year" 
-        name="year" 
+        id="inv_year" 
+        name="inv_year" 
         required 
         min="1886" 
         max="2100"
-        value="<%= typeof year !== 'undefined' ? year : '' %>"
+        value="<%= typeof inv_year !== 'undefined' ? inv_year : '' %>"
       >
 
       <!-- Miles -->
-      <label for="miles">Miles:</label>
+      <label for="inv_miles">Miles:</label>
       <input 
         type="number" 
-        id="miles" 
-        name="miles" 
+        id="inv_miles" 
+        name="inv_miles" 
         required 
         min="0"
-        value="<%= typeof miles !== 'undefined' ? miles : '' %>"
+        value="<%= typeof inv_miles !== 'undefined' ? inv_miles : '' %>"
       >
 
       <!-- Color -->
-      <label for="color">Color:</label>
+      <label for="inv_color">Color:</label>
       <input 
         type="text" 
-        id="color" 
-        name="color" 
+        id="inv_color" 
+        name="inv_color" 
         required 
         pattern="^[A-Za-z\s]{1,30}$" 
         title="Letters and spaces only. Max 30 characters."
-        value="<%= typeof color !== 'undefined' ? color : '' %>"
+        value="<%= typeof inv_color !== 'undefined' ? inv_color : '' %>"
       >
 
       <button type="submit">Add Vehicle</button>
