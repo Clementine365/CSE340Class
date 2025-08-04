@@ -1,10 +1,14 @@
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const bcrypt = require("bcryptjs");
 const utilities = require("../utilities/");
 const accountModel = require("../models/account-model");
 
 /* ****************************************
  * Deliver login view
  * *************************************** */
-async function buildLogin(req, res, next) {
+async function buildLogin(req, res) {
   const nav = await utilities.getNav();
   const noticeMessages = req.flash("notice") || [];
   const errorMessages = req.flash("error") || [];
@@ -21,7 +25,7 @@ async function buildLogin(req, res, next) {
 /* ****************************************
  * Deliver registration view
  * *************************************** */
-async function buildRegister(req, res, next) {
+async function buildRegister(req, res) {
   const nav = await utilities.getNav();
   const noticeMessages = req.flash("notice") || [];
 
@@ -34,7 +38,7 @@ async function buildRegister(req, res, next) {
 }
 
 /* ****************************************
- * Process Registration
+ * Process registration
  * *************************************** */
 async function registerAccount(req, res) {
   const nav = await utilities.getNav();
@@ -74,7 +78,7 @@ async function registerAccount(req, res) {
 }
 
 /* ****************************************
- * Process Login (Updated Redirect)
+ * Legacy login session method (if needed)
  * *************************************** */
 async function processLogin(req, res) {
   const nav = await utilities.getNav();
@@ -107,7 +111,6 @@ async function processLogin(req, res) {
       });
     }
 
-    // Save account info in session
     req.session.account = {
       account_id: user.account_id,
       account_firstname: user.account_firstname,
@@ -116,9 +119,7 @@ async function processLogin(req, res) {
       account_type: user.account_type,
     };
 
-    //  Redirect to success page after login
     return res.redirect("/account/success");
-
   } catch (error) {
     console.error("Login error:", error);
     req.flash("notice", "An error occurred during login.");
@@ -132,9 +133,93 @@ async function processLogin(req, res) {
   }
 }
 
+/* ****************************************
+ * Process login request (JWT-based)
+ * *************************************** */
+async function accountLogin(req, res) {
+  const nav = await utilities.getNav();
+  const { account_email, account_password } = req.body;
+
+  try {
+    const accountData = await accountModel.getAccountByEmail(account_email);
+
+    if (!accountData) {
+      req.flash("notice", "Please check your credentials and try again.");
+      return res.status(400).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email,
+        noticeMessages: req.flash("notice"),
+        errorMessages: [],
+      });
+    }
+
+    const passwordMatch = await bcrypt.compare(account_password, accountData.account_password);
+
+    if (!passwordMatch) {
+      req.flash("notice", "Please check your credentials and try again.");
+      return res.status(400).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email,
+        noticeMessages: req.flash("notice"),
+        errorMessages: [],
+      });
+    }
+
+    delete accountData.account_password;
+
+    const accessToken = jwt.sign(
+      accountData,
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: 3600 * 1000 }
+    );
+
+    if (process.env.NODE_ENV === "development") {
+      res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
+    } else {
+      res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 });
+    }
+
+    return res.redirect("/account/");
+  } catch (error) {
+    console.error("Login error:", error);
+    req.flash("notice", "Access forbidden.");
+    return res.status(403).render("account/login", {
+      title: "Login",
+      nav,
+      errors: null,
+      noticeMessages: req.flash("notice"),
+      errorMessages: [],
+    });
+  }
+}
+
+/* ****************************************
+ * Build account management view
+ * *************************************** */
+async function buildAccountManagement(req, res) {
+  const nav = await utilities.getNav();
+  const message = req.flash("notice") || [];
+
+  res.render("account/management", {
+    title: "Account Management",
+    nav,
+    message,
+    errors: null,
+  });
+}
+
+/* ****************************************
+ * Export controller functions
+ * *************************************** */
 module.exports = {
   buildLogin,
   buildRegister,
   registerAccount,
   processLogin,
+  accountLogin,
+  buildAccountManagement,
 };

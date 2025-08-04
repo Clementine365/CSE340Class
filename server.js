@@ -5,6 +5,7 @@
 
 require("dotenv").config();
 const express = require("express");
+const path = require("path");                 // Added path module
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const flash = require("connect-flash");
@@ -26,11 +27,12 @@ const utilities = require("./utilities");
  * Middleware
  *************************/
 
-// Serve static files from /public
-app.use(express.static("public"));
+// Serve static files from /public with absolute path
+app.use(express.static(path.join(__dirname, "public")));
 
 // Parse cookies
 app.use(cookieParser());
+app.use(utilities.checkJWTToken);
 
 // Session configuration (updated)
 app.use(
@@ -120,7 +122,7 @@ app.use(async (err, req, res, next) => {
 /* ***********************
  * Start Server
  *************************/
-const port = process.env.PORT || 5600;
+const port = process.env.PORT || 5500;
 const host = process.env.HOST || "localhost";
 
 app.listen(port, () => {

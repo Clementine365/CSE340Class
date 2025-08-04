@@ -1,0 +1,19 @@
+<main class="management-container">
+  <h1>Management your account</h1>
+
+  <% if (message) { %>
+    <div class="account-message-box"><%= message %></div>
+  <% } %>
+
+  <% if (errors && errors.length > 0) { %>
+    <ul class="error-messages">
+      <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <div class="account-message-box">
+    <p>Yay You're logged in!.</p>
+  </div>
+</main>

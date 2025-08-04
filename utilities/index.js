@@ -1,5 +1,7 @@
 const invModel = require("../models/inventory-model");
-const checkLogin = require("./check-login"); // this imports checkLogin middleware
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 const Util = {};
 
 /* ************************
@@ -7,8 +9,6 @@ const Util = {};
  ************************** */
 Util.getNav = async function (req, res, next) {
   let data = await invModel.getClassifications();
-
-  // this supports both cases: data.rows or data array directly
   const rows = data?.rows || data || [];
 
   let list = "<ul>";
@@ -141,7 +141,40 @@ Util.buildVehicleDetailView = function (vehicle) {
 Util.handleErrors = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next);
 
-/*  Add checkLogin middleware to exports */
-Util.checkLogin = checkLogin;
+/* ****************************************
+ * Middleware to check for JWT token
+ **************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("notice", "Please log in");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        res.locals.accountData = accountData;
+        res.locals.loggedin = true;
+        next();
+      }
+    );
+  } else {
+    next(); // Continue without JWT
+  }
+};
+
+/* ****************************************
+ * Check Login Middleware (uses res.locals.loggedin)
+ **************************************** */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next();
+  } else {
+    req.flash("notice", "Please log in.");
+    return res.redirect("/account/login");
+  }
+};
 
 module.exports = Util;
