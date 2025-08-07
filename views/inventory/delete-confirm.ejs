@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Delete <%= inventory.inv_make %> <%= inventory.inv_model %></title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <main class="delete-inventory-container">
+    <h1>Delete <%= inventory.inv_make %> <%= inventory.inv_model %></h1>
+
+    <p>Confirm Deletion - This delete is permanent and cannot be undone.</p>
+
+    <form action="/inv/delete" method="post">
+      <label for="inv_make">Make</label>
+      <input type="text" id="inv_make" name="inv_make" value="<%= inventory.inv_make %>" readonly />
+
+      <label for="inv_model">Model</label>
+      <input type="text" id="inv_model" name="inv_model" value="<%= inventory.inv_model %>" readonly />
+
+      <label for="inv_year">Year</label>
+      <input type="text" id="inv_year" name="inv_year" value="<%= inventory.inv_year %>" readonly />
+
+      <label for="inv_price">Price</label>
+      <input type="text" id="inv_price" name="inv_price" value="$<%= inventory.inv_price.toLocaleString() %>" readonly />
+
+      <!-- Hidden input for inv_id -->
+      <input type="hidden" name="inv_id" value="<%= inventory.inv_id %>" />
+
+      <input type="submit" value="Delete" />
+    </form>
+  </main>
+</body>
+</html>

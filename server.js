@@ -5,13 +5,13 @@
 
 require("dotenv").config();
 const express = require("express");
-const path = require("path");                 // Added path module
+const path = require("path");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const flash = require("connect-flash");
-const bodyParser = require("body-parser");
+// Removed body-parser - using built-in middleware
 const expressLayouts = require("express-ejs-layouts");
-const cookieParser = require("cookie-parser");  // Added cookie-parser
+const cookieParser = require("cookie-parser");
 const pool = require("./database/");
 const app = express();
 
@@ -48,7 +48,7 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 2, // 2 hours
       httpOnly: true,
-      secure: false, // set to true if using HTTPS in production
+      secure: process.env.NODE_ENV === "production", // secure true in prod
       sameSite: true,
     },
   })
@@ -57,18 +57,18 @@ app.use(
 // Flash messages
 app.use(flash());
 
-// Flash messages helper for views
+// Flash messages helper for views (expose as properties, not a function)
 app.use((req, res, next) => {
-  res.locals.messages = () => ({
+  res.locals.messages = {
     notice: req.flash("notice"),
     error: req.flash("error"),
-  });
+  };
   next();
 });
 
-// Body parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Body parser (built-in middleware instead of body-parser)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Debug middleware to log cookies and session (optional, remove in production)
 app.use((req, res, next) => {

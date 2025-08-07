@@ -3,48 +3,52 @@ const router = express.Router();
 
 const invController = require("../controllers/invController");
 const validate = require("../utilities/inventory-validation");
+const Util = require("../utilities/index");
 
-// ============================
-// MAIN INVENTORY PAGE ROUTE
-// ============================
+// Inventory management view
+router.get("/", Util.checkLogin, invController.buildManagement);
 
-// GET - Show Inventory Management Page
-router.get("/", invController.buildInventory);
-
-// =====================
-// CLASSIFICATION ROUTES
-// =====================
-
-// GET - Show Add Classification form
-router.get("/add-classification", invController.buildAddClassification);
-
-// POST - Process Add Classification form with validation
+// Add Classification
+router.get("/add-classification", Util.checkLogin, invController.buildAddClassification);
 router.post(
   "/add-classification",
-  validate.classificationRules(),       // Client-side validation rules
-  validate.checkAddClassification,      // Server-side validation handler
-  invController.addClassification       // Controller logic
+  Util.checkLogin,
+  validate.classificationRules(),
+  validate.checkAddClassification,
+  invController.addClassification
 );
 
-// ==========================
-// VEHICLE INVENTORY ROUTES
-// ==========================
-
-// GET - Show Add Vehicle form
-router.get("/add-inventory", invController.buildAddInventory);
-
-// POST - Process Add Vehicle form with validation
+// Add Inventory
+router.get("/add-inventory", Util.checkLogin, invController.buildAddInventory);
 router.post(
   "/add-inventory",
-  validate.addInventoryRules(),         // Client-side validation rules
-  validate.checkAddInventory,           // Server-side validation handler
-  invController.addInventory            // Controller logic
+  Util.checkLogin,
+  validate.addInventoryRules(),
+  validate.checkAddInventory,
+  invController.addInventory
 );
 
-// =============================
-// VIEW BY CLASSIFICATION ROUTE
-// =============================
+// View by Classification
+router.get("/classification/:classification_id", invController.buildByClassificationId);
+router.get("/type/:classification_id", invController.buildByClassificationId);
 
-router.get("/type/:classificationId", invController.buildInventoryByClassificationId);
+// View Vehicle Detail
+router.get("/detail/:inv_id", invController.buildDetail);
+
+// Edit Inventory
+router.get("/edit/:inv_id", Util.checkLogin, invController.buildEditInventory);
+router.post(
+  "/update",
+  Util.checkLogin,
+  validate.updateInventoryRules(),
+  validate.checkUpdateInventory,
+  invController.updateInventory
+);
+
+// Delete Confirmation View (GET)
+router.get("/delete/:inv_id", Util.checkLogin, invController.buildDeleteInventory);
+
+// Perform Delete (POST)
+router.post("/delete", Util.checkLogin, invController.deleteInventory);
 
 module.exports = router;

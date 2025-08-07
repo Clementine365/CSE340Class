@@ -4,6 +4,7 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const utilities = require("../utilities/");
 const accountModel = require("../models/account-model");
+const invModel = require("../models/inventory-model");  // Added to get classifications
 
 /* ****************************************
  * Deliver login view
@@ -200,16 +201,28 @@ async function accountLogin(req, res) {
 /* ****************************************
  * Build account management view
  * *************************************** */
-async function buildAccountManagement(req, res) {
-  const nav = await utilities.getNav();
-  const message = req.flash("notice") || [];
+async function buildAccountManagement(req, res, next) {
+  try {
+    const nav = await utilities.getNav();
 
-  res.render("account/management", {
-    title: "Account Management",
-    nav,
-    message,
-    errors: null,
-  });
+    let classificationSelect = await invModel.getClassifications();
+    if (!Array.isArray(classificationSelect)) {
+      classificationSelect = [];
+    }
+
+    const message = req.flash("notice") || [];
+
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      classificationSelect,  // Pass this so your view dropdown works
+      message,
+      errors: null,
+    });
+  } catch (error) {
+    console.error("Error building account management view:", error);
+    next(error);
+  }
 }
 
 /* ****************************************

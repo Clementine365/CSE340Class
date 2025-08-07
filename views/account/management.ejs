@@ -1,19 +1,47 @@
-<main class="management-container">
-  <h1>Management your account</h1>
+<h1>Inventory Management</h1>
 
-  <% if (message) { %>
-    <div class="account-message-box"><%= message %></div>
-  <% } %>
+<% if (messages && messages.length > 0) { %>
+  <ul class="flash-messages">
+    <% messages.forEach(message => { %>
+      <li><%= message %></li>
+    <% }) %>
+  </ul>
+<% } %>
 
-  <% if (errors && errors.length > 0) { %>
-    <ul class="error-messages">
-      <% errors.forEach(function(error) { %>
-        <li><%= error.msg %></li>
+<h2>Add New Classification or Vehicle</h2>
+<ul>
+  <li><a href="/inv/add-classification">Add Classification</a></li>
+  <li><a href="/inv/add-inventory">Add Vehicle</a></li>
+</ul>
+
+<h2>View Inventory by Classification</h2>
+<form id="classificationForm">
+  <label for="classificationSelect">Select Classification</label>
+  <select id="classificationSelect" name="classification_id">
+    <option value="">-- Select Classification --</option>
+    <% if (Array.isArray(classificationSelect)) { %>
+      <% classificationSelect.forEach(c => { %>
+        <option value="<%= c.classification_id %>"><%= c.classification_name %></option>
       <% }) %>
-    </ul>
-  <% } %>
+    <% } %>
+  </select>
+  <button type="submit">View Inventory</button>
+</form>
 
-  <div class="account-message-box">
-    <p>Yay You're logged in!.</p>
-  </div>
-</main>
+<script>
+  document.getElementById("classificationForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const selected = document.getElementById("classificationSelect").value;
+    if (selected) {
+      window.location.href = `/inv/classification/${selected}`;
+    }
+  });
+</script>
+
+
+
+
+
+
+
+

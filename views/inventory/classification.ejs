@@ -7,23 +7,53 @@
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+  
+
+  
   <div class="container">
-    <header>
-      <h1><%= title ? title : 'Vehicle Inventory' %></h1>
-    </header>
-
     <main class="content-box">
+      <h1><%= title ? title : 'Vehicle Inventory' %></h1>
 
-      <% if (title) { %>
-        <!-- Add Vehicle Link -->
-        <p><a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a></p>
-
-        <%- grid %>
-
-      <% } else { %>
-        <p>No classification title found. <a href="/">Return to Home</a></p>
+      <!-- Flash notice (e.g., no inventory message) -->
+      <% if (typeof messages !== 'undefined' && messages.notice) { %>
+        <div class="notice"><%= messages.notice %></div>
       <% } %>
 
+      <!-- Classification dropdown (optional) -->
+      <% if (typeof classifications !== 'undefined') { %>
+        <form>
+          <label for="classificationSelect">Filter by classification:</label>
+          <select name="classification_id" id="classificationSelect" onchange="redirectToClassification(this)">
+            <option value="">-- Select Classification --</option>
+            <% classifications.forEach(c => { %>
+              <option value="<%= c.classification_id %>" <%= c.classification_id == classification_id ? 'selected' : '' %>>
+                <%= c.classification_name %>
+              </option>
+            <% }) %>
+          </select>
+        </form>
+      <% } %>
+
+      <script>
+        function redirectToClassification(select) {
+          const id = select.value;
+          if (id) {
+            window.location.href = `/inv/type/${id}`;
+          }
+        }
+      </script>
+
+      <hr />
+
+      <!-- Add Vehicle Link -->
+      <p><a href="/inv/add-inventory" class="btn btn-primary">Add Vehicle</a></p>
+
+      <!-- Inventory Grid -->
+      <% if (grid) { %>
+        <%- grid %>
+      <% } else { %>
+        <p>No inventory found in this classification.</p>
+      <% } %>
     </main>
 
     <footer>

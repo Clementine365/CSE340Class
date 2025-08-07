@@ -1,140 +1,162 @@
 const invModel = require("../models/inventory-model");
-const utilities = require("../utilities/");
-const { validationResult, body } = require("express-validator");
+const Util = require("../utilities");
 
 const invController = {};
-
-/* Validation chains for Add Classification form */
-invController.validateClassification = [
-  body("classification_name")
-    .trim()
-    .notEmpty().withMessage("Classification name is required.")
-    .isAlphanumeric().withMessage("Classification name must contain only letters and numbers.")
-    .isLength({ max: 30 }).withMessage("Classification name must be at most 30 characters."),
-];
-
-/* Validation chains for Add Inventory (Vehicle) form */
-invController.validateInventory = [
-  body("classification_id")
-    .notEmpty().withMessage("Classification is required.")
-    .isInt({ min: 1 }).withMessage("Classification must be a valid selection."),
-  
-  body("make")
-    .trim()
-    .notEmpty().withMessage("Make is required.")
-    .matches(/^[A-Za-z0-9\s\-]{1,50}$/).withMessage("Make must be letters, numbers, spaces, or hyphens, max 50 chars."),
-  
-  body("model")
-    .trim()
-    .notEmpty().withMessage("Model is required.")
-    .matches(/^[A-Za-z0-9\s\-]{1,50}$/).withMessage("Model must be letters, numbers, spaces, or hyphens, max 50 chars."),
-  
-  body("description")
-    .trim()
-    .notEmpty().withMessage("Description is required."),
-  
-  body("image")
-    .optional({ checkFalsy: true })
-    .isString().withMessage("Image path must be a string."),
-  
-  body("thumbnail")
-    .optional({ checkFalsy: true })
-    .isString().withMessage("Thumbnail path must be a string."),
-  
-  body("price")
-    .notEmpty().withMessage("Price is required.")
-    .isFloat({ min: 0 }).withMessage("Price must be a positive number."),
-  
-  body("year")
-    .notEmpty().withMessage("Year is required.")
-    .isInt({ min: 1886, max: 2100 }).withMessage("Year must be between 1886 and 2100."),
-  
-  body("miles")
-    .notEmpty().withMessage("Miles is required.")
-    .isInt({ min: 0 }).withMessage("Miles must be zero or more."),
-  
-  body("color")
-    .trim()
-    .notEmpty().withMessage("Color is required.")
-    .matches(/^[A-Za-z\s]{1,30}$/).withMessage("Color must be letters and spaces only, max 30 chars."),
-];
-
-/* GET - Render Inventory Management page */
-invController.buildInventory = async (req, res) => {
+/* ===============================
+   Inventory Management View
+================================= */
+invController.buildManagement = async (req, res, next) => {
   try {
-    let nav = await utilities.getNav();
+    const nav = await Util.getNav();
+    let classifications = await invModel.getClassifications();
+    if (!Array.isArray(classifications)) classifications = [];
+
+    // Get classification_id from query string, if any
+    const classification_id = req.query.classification_id || "";
+
+    // If a classification is selected, load its inventory
+    let inventory = [];
+    if (classification_id) {
+      inventory = await invModel.getInventoryByClassificationId(classification_id);
+    }
+ // ✅ Add this to debug what's passed to the view
+    console.log("Rendering management with:", {
+      classifications,
+      classification_id,
+      inventory,
+      messages: req.flash()
+    });
+
+
     res.render("inventory/management", {
       title: "Inventory Management",
       nav,
-      message: null,
+      classifications,
+      classification_id,
+      inventory,
+      messages: req.flash(),
     });
-  } catch (err) {
-    console.error("Error building inventory management page:", err);
-    res.status(500).send("Internal Server Error");
+  } catch (error) {
+    console.error("Error rendering management view:", error);
+    next(error);
   }
 };
 
-/* GET - Render Add Classification form */
-invController.buildAddClassification = async (req, res) => {
-  let nav = await utilities.getNav();
-  res.render("inventory/add-classification", {
-    title: "Add New Classification",
-    nav,
-    errors: null,
-    message: null,
-    classification_name: "",
-  });
-};
-
-/* POST - Process Add Classification form */
-invController.addClassification = async (req, res) => {
-  const { classification_name } = req.body;
-  const errors = validationResult(req);
-  let nav = await utilities.getNav();
-
-  if (!errors.isEmpty()) {
-    return res.render("inventory/add-classification", {
-      title: "Add New Classification",
-      nav,
-      errors,
-      message: null,
-      classification_name,
-    });
-  }
-
+/* ===============================
+   Show Add Classification Form
+================================= */
+invController.buildAddClassification = async (req, res, next) => {
   try {
-    const result = await invModel.addClassification(classification_name);
-    if (result) {
-      req.flash("notice", "New classification added successfully.");
-      return res.redirect("/inv");
-    } else {
-      throw new Error("Insert failed");
-    }
-  } catch (err) {
-    console.error(err);
+    const nav = await Util.getNav();
     res.render("inventory/add-classification", {
-      title: "Add New Classification",
+      title: "Add Classification",
       nav,
-      message: "Error adding classification.",
-      errors: null,
-      classification_name,
+      messages: req.flash(),
     });
+  } catch (error) {
+    next(error);
   }
 };
 
-/* GET - Display inventory items by classification ID with built HTML grid */
-invController.buildInventoryByClassificationId = async (req, res, next) => {
-  const classificationId = req.params.classificationId;
+/* ===============================
+   Process Add Classification Form
+================================= */
+invController.addClassification = async (req, res, next) => {
   try {
-    const data = await invModel.getInventoryByClassificationId(classificationId);
-    let nav = await utilities.getNav();
-    const grid = await utilities.buildClassificationGrid(data);
+    const { classification_name } = req.body;
+    const newClassification = await invModel.addClassification(classification_name);
+
+    if (newClassification) {
+      req.flash("info", `Classification "${newClassification.classification_name}" added successfully.`);
+      res.redirect("/inv/management");
+    } else {
+      req.flash("info", "Failed to add classification.");
+      res.redirect("/inv/add-classification");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===============================
+   Show Add Inventory Form
+================================= */
+invController.buildAddInventory = async (req, res, next) => {
+  try {
+    const nav = await Util.getNav();
+    let classifications = await invModel.getClassifications();
+    if (!Array.isArray(classifications)) classifications = [];
+
+    res.render("inventory/add-inventory", {
+      title: "Add New Vehicle",
+      nav,
+      classifications,
+      classificationList: Util.buildClassificationList(classifications),
+      message: req.flash("info")[0] || null,
+      errors: null,
+      inv_make: "",
+      inv_model: "",
+      inv_description: "",
+      inv_image: "/images/vehicles/no-image.png",
+      inv_thumbnail: "/images/vehicles/no-image-tn.png",
+      inv_price: "",
+      inv_year: "",
+      inv_miles: "",
+      inv_color: "",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===============================
+   Process Add Inventory Form
+================================= */
+invController.addInventory = async (req, res, next) => {
+  try {
+    const inventoryData = req.body;
+    const added = await invModel.addInventory(inventoryData);
+
+    if (added) {
+      req.flash("info", "Vehicle added successfully!");
+      res.redirect("/inv/management");
+    } else {
+      req.flash("info", "Failed to add vehicle.");
+      res.redirect("/inv/add-inventory");
+    }
+  } catch (error) {
+    console.error("Error adding inventory:", error);
+    req.flash("info", "Failed to add vehicle.");
+    res.redirect("/inv/add-inventory");
+  }
+};
+
+/* ===============================
+   Build Inventory by Classification
+================================= */
+invController.buildByClassificationId = async (req, res, next) => {
+  try {
+    const classification_id = req.params.classification_id;
+    const nav = await Util.getNav();
+    const data = await invModel.getInventoryByClassificationId(classification_id);
+
+    if (!data || data.length === 0) {
+      req.flash("notice", "No vehicles found.");
+      return res.status(404).render("inventory/classification", {
+        title: "Vehicle Inventory",
+        nav,
+        classification_id,
+        grid: null,
+      });
+    }
+
+    const grid = Util.buildClassificationGrid(data);
+    const classificationName = data[0].classification_name;
 
     res.render("inventory/classification", {
-      title: "Vehicles",
+      title: `${classificationName} vehicles`,
       nav,
-      classificationId,
-      inventory: data,
+      classification_id,
       grid,
     });
   } catch (error) {
@@ -142,60 +164,145 @@ invController.buildInventoryByClassificationId = async (req, res, next) => {
   }
 };
 
-/* GET - Render Add Inventory (Vehicle) form */
-invController.buildAddInventory = async (req, res) => {
-  let nav = await utilities.getNav();
-  const classifications = await invModel.getClassifications();
-  const classificationList = await utilities.buildClassificationList(classifications);
+/* ===============================
+   Vehicle Detail View
+================================= */
+invController.buildDetail = async (req, res, next) => {
+  try {
+    const inv_id = req.params.inv_id;
+    const nav = await Util.getNav();
+    const vehicle = await invModel.getInventoryById(inv_id);
 
-  res.render("inventory/add-inventory", {
-    title: "Add Vehicle",
-    nav,
-    classificationList,
-    errors: null,
-    message: null,
-    vehicle: {},
-  });
+    if (!vehicle) {
+      const err = new Error("Vehicle not found");
+      err.status = 404;
+      return next(err);
+    }
+
+    const vehicleDetail = Util.buildVehicleDetailView(vehicle);
+    res.render("inventory/detail", {
+      title: `${vehicle.inv_make} ${vehicle.inv_model} Details`,
+      nav,
+      vehicle,
+      vehicleDetail,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-/* POST - Process Add Inventory form */
-invController.addInventory = async (req, res) => {
-  const errors = validationResult(req);
-  let nav = await utilities.getNav();
-  const classifications = await invModel.getClassifications();
-  const classificationList = await utilities.buildClassificationList(classifications);
-  const vehicle = req.body;
-
-  if (!errors.isEmpty()) {
-    return res.render("inventory/add-inventory", {
-      title: "Add Vehicle",
-      nav,
-      classificationList,
-      vehicle,
-      errors,
-      message: null,
-    });
-  }
-
+/* ===============================
+   Build Edit Inventory View
+================================= */
+invController.buildEditInventory = async (req, res, next) => {
   try {
-    const result = await invModel.addInventory(vehicle);
-    if (result) {
-      req.flash("notice", "New vehicle added successfully.");
-      return res.redirect("/inv");
-    } else {
-      throw new Error("Insert failed");
+    const inv_id = req.params.inv_id;
+    const inv = await invModel.getInventoryById(inv_id);
+    if (!inv) {
+      req.flash("info", "Vehicle not found.");
+      return res.redirect("/inv/management");
     }
-  } catch (err) {
-    console.error(err);
-    res.render("inventory/add-inventory", {
-      title: "Add Vehicle",
+
+    let classifications = await invModel.getClassifications();
+    if (!Array.isArray(classifications)) classifications = [];
+    const classificationSelect = Util.buildClassificationList(classifications, inv.classification_id);
+    const nav = await Util.getNav();
+
+    res.render("inventory/edit-inventory", {
+      title: `Edit ${inv.inv_make} ${inv.inv_model}`,
       nav,
-      classificationList,
-      vehicle,
-      message: "Error adding vehicle.",
+      inv,
+      classificationSelect,
+      messages: req.flash(),
       errors: null,
     });
+  } catch (error) {
+    next(error);
   }
 };
 
+invController.updateInventory = async function (req, res) {
+  const {
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    inv_id
+  } = req.body;
+
+  const updateResult = await invModel.updateInventory([
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+    inv_id
+  ]);
+
+  if (updateResult) {
+    req.flash("info", "✅ Vehicle updated successfully.");
+    res.redirect("/inv");
+  } else {
+    req.flash("error", "❌ Vehicle update failed. Please try again.");
+    res.redirect(`/inv/edit/${inv_id}`);
+  }
+};
+
+/* ===============================
+   Build Delete Confirmation View
+================================= */
+invController.buildDeleteInventory = async (req, res, next) => {
+  try {
+    const inv_id = req.params.inv_id;
+    const inv = await invModel.getInventoryById(inv_id);
+    if (!inv) {
+      req.flash("info", "Vehicle not found.");
+      return res.redirect("/inv/management");
+    }
+
+    const nav = await Util.getNav();
+    const title = `Delete ${inv.inv_make} ${inv.inv_model}`;
+
+    res.render("inventory/delete-confirm", {
+      title,
+      nav,
+      inventory: inv,
+      messages: req.flash(),
+      errors: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+  // Delete Inventory
+invController.deleteInventory = async (req, res, next) => {
+  try {
+    const inv_id = parseInt(req.body.inv_id);
+    const result = await invModel.deleteInventory(inv_id);
+
+    if (result && result.rowCount > 0) {
+      req.flash("info", "✅ Vehicle deleted successfully.");
+      res.redirect("/inv/management");
+    } else {
+      req.flash("info", "❌ Failed to delete vehicle.");
+      res.redirect(`/inv/delete/${inv_id}`);
+    }
+  } catch (error) {
+    console.error("Error deleting vehicle:", error);
+    next(error);
+  }
+}; 
 module.exports = invController;

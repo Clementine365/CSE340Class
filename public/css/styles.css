@@ -1,5 +1,3 @@
-
-
 /* General Body Styles - shared light blue background */
 body {
   font-family: var(--standard-font);
@@ -551,3 +549,257 @@ footer {
   margin-top: 1.5rem;
   text-align: center;
 }
+
+
+
+/* Edit Inventory Page Container */
+.edit-inventory-container {
+  max-width: 480px;
+  margin: 3rem auto 4rem auto;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  font-family: var(--standard-font);
+  background-color: white;
+  border: 3px solid cyan;
+  color: #1d3557;
+  text-align: left;
+}
+
+/* Heading */
+.edit-inventory-container h1 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #1d3557;
+  text-align: center;
+}
+
+/* Form styling */
+.edit-inventory-container form {
+  width: 100%;
+}
+
+/* Labels */
+.edit-inventory-container label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1d3557;
+  margin-top: 1rem;
+}
+
+/* Inputs, Select, Textarea */
+.edit-inventory-container input,
+.edit-inventory-container select,
+.edit-inventory-container textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  font-family: var(--standard-font);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edit-inventory-container input:focus,
+.edit-inventory-container select:focus,
+.edit-inventory-container textarea:focus {
+  outline: none;
+  border-color: #1d3557;
+  box-shadow: 0 0 6px 2px #a8dadc;
+}
+
+.edit-inventory-container textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Buttons */
+.edit-inventory-container button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1d3557;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 2rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.edit-inventory-container button:hover {
+  background-color: #457b9d;
+}
+
+/* Delete button distinct style */
+.edit-inventory-container .delete-button {
+  background-color: #e63946;
+  margin-top: 1rem;
+}
+
+.edit-inventory-container .delete-button:hover {
+  background-color: #b22222;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .edit-inventory-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem 2rem;
+    max-width: 100%;
+  }
+}
+
+.flash-messages {
+  margin: 10px 0;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #d9edf7;
+  color: #31708f;
+  border: 1px solid #bce8f1;
+  margin-bottom: 5px;
+}
+
+
+/* Delete Inventory Page Container */
+.delete-inventory-container {
+  max-width: 480px;
+  margin: 3rem auto 4rem auto;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  font-family: var(--standard-font);
+  background-color: white;
+  border: 3px solid cyan;
+  color: #1d3557;
+  text-align: left;
+}
+
+/* Heading */
+.delete-inventory-container h1 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #1d3557;
+  text-align: center;
+}
+
+/* Paragraph */
+.delete-inventory-container p {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #e63946; /* red alert color */
+  text-align: center;
+}
+
+/* Delete Inventory Page Container */
+.delete-inventory-container {
+  max-width: 480px;
+  margin: 3rem auto 4rem auto;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+  font-family: var(--standard-font);
+  background-color: white;       /* White container */
+  border: 3px solid cyan;
+  color: #1d3557;
+  text-align: left;
+
+  /* To visually separate from background */
+  position: relative;
+  z-index: 10;
+}
+
+/* Heading */
+.delete-inventory-container h1 {
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: #1d3557;
+  text-align: center;
+}
+
+/* Paragraph */
+.delete-inventory-container p {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #e63946; /* red alert color */
+  text-align: center;
+}
+
+/* Form */
+.delete-inventory-container form {
+  width: 100%;
+}
+
+/* Labels */
+.delete-inventory-container label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1d3557;
+  margin-top: 1rem;
+}
+
+/* Inputs (readonly) */
+.delete-inventory-container input[type="text"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  background-color: #f0f0f0; /* slightly grey for readonly */
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Submit button */
+.delete-inventory-container input[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #e63946; /* red */
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 2rem;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.delete-inventory-container input[type="submit"]:hover {
+  background-color: #b22222; /* darker red on hover */
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .delete-inventory-container {
+    margin: 2rem 1rem;
+    padding: 1.5rem 2rem;
+    max-width: 100%;
+  }
+}
+
+
+
+
+
+
+
+

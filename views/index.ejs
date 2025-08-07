@@ -16,8 +16,22 @@
 
       <header>
         <h1>Welcome to CSE Motors!</h1>
-        
-<%- messages() %>
+
+        <% if (messages.notice && messages.notice.length > 0) { %>
+          <div class="flash-notice">
+            <% messages.notice.forEach(function(msg) { %>
+              <p><%= msg %></p>
+            <% }); %>
+          </div>
+        <% } %>
+
+        <% if (messages.error && messages.error.length > 0) { %>
+          <div class="flash-error">
+            <% messages.error.forEach(function(msg) { %>
+              <p><%= msg %></p>
+            <% }); %>
+          </div>
+        <% } %>
       </header>
 
       <main>

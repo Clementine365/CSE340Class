@@ -16,48 +16,39 @@ function addInventoryRules() {
     body("classification_id")
       .notEmpty()
       .withMessage("Classification is required."),
-
     body("inv_make")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Make is required.")
       .matches(/^[A-Za-z0-9\s\-]+$/)
       .withMessage("Make must contain letters, numbers, spaces, or hyphens only."),
-
     body("inv_model")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Model is required.")
       .matches(/^[A-Za-z0-9\s\-]+$/)
       .withMessage("Model must contain letters, numbers, spaces, or hyphens only."),
-
     body("inv_description")
       .trim()
       .isLength({ min: 1 })
       .withMessage("Description is required."),
-
     body("inv_image")
       .optional({ checkFalsy: true })
       .isURL()
       .withMessage("Image path must be a valid URL or left blank."),
-
     body("inv_thumbnail")
       .optional({ checkFalsy: true })
       .isURL()
       .withMessage("Thumbnail path must be a valid URL or left blank."),
-
     body("inv_price")
       .isFloat({ min: 0 })
       .withMessage("Price must be a positive number."),
-
     body("inv_year")
       .isInt({ min: 1886, max: 2100 })
       .withMessage("Year must be between 1886 and 2100."),
-
     body("inv_miles")
       .isInt({ min: 0 })
       .withMessage("Miles must be a positive integer."),
-
     body("inv_color")
       .trim()
       .matches(/^[A-Za-z\s]{1,30}$/)
@@ -65,13 +56,18 @@ function addInventoryRules() {
   ];
 }
 
-// Middleware to check validation result for classification
+function updateInventoryRules() {
+  // For update validation, same rules as add
+  return addInventoryRules();
+}
+
+/* Middleware to check validation results for adding a classification */
 function checkAddClassification(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).render("inventory/add-classification", {
       title: "Add New Classification",
-      errors: errors,
+      errors,                     // Pass the full validationResult object
       message: null,
       classification_name: req.body.classification_name,
       nav: req.nav || null,
@@ -80,14 +76,13 @@ function checkAddClassification(req, res, next) {
   next();
 }
 
-// Middleware to check validation result for inventory (vehicle)
+/* Middleware to check validation results for adding inventory */
 function checkAddInventory(req, res, next) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Ensure classificationList is passed if your form uses it
     return res.status(400).render("inventory/add-inventory", {
       title: "Add Vehicle",
-      errors: errors,
+      errors,                     // Pass the full validationResult object
       message: null,
       classificationList: req.classificationList || null,
       ...req.body,
@@ -97,9 +92,27 @@ function checkAddInventory(req, res, next) {
   next();
 }
 
+/* Middleware to check validation results for updating inventory */
+function checkUpdateInventory(req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).render("inventory/edit-inventory", {
+      title: `Edit ${req.body.inv_make || ""} ${req.body.inv_model || ""}`,
+      errors,                    // Pass the full validationResult object
+      message: null,
+      classificationSelect: req.classificationSelect || null,
+      inv: req.body,
+      nav: req.nav || null,
+    });
+  }
+  next();
+}
+
 module.exports = {
   classificationRules,
   addInventoryRules,
+  updateInventoryRules,
   checkAddClassification,
   checkAddInventory,
+  checkUpdateInventory,
 };

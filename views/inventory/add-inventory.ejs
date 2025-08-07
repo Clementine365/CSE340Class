@@ -1,8 +1,13 @@
-<!-- Page Title -->
-<title>Add New Vehicle</title>
-
-<div class="container">
-  <div class="inventory-container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title || 'Add New Vehicle' %></title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="container">
     <h1>Add New Vehicle</h1>
 
     <% if (message) { %>
@@ -34,7 +39,7 @@
         required 
         pattern="^[A-Za-z0-9\s\-]{1,50}$" 
         title="Letters, numbers, hyphens, and spaces only. Max 50 characters."
-        value="<%= typeof inv_make !== 'undefined' ? inv_make : '' %>"
+        value="<%= inv_make %>"
       >
 
       <!-- Model -->
@@ -46,7 +51,7 @@
         required 
         pattern="^[A-Za-z0-9\s\-]{1,50}$" 
         title="Letters, numbers, hyphens, and spaces only. Max 50 characters."
-        value="<%= typeof inv_model !== 'undefined' ? inv_model : '' %>"
+        value="<%= inv_model %>"
       >
 
       <!-- Description -->
@@ -55,7 +60,7 @@
         id="inv_description" 
         name="inv_description" 
         required
-      ><%= typeof inv_description !== 'undefined' ? inv_description : '' %></textarea>
+      ><%= inv_description %></textarea>
 
       <!-- Image Path -->
       <label for="inv_image">Image Path:</label>
@@ -63,7 +68,7 @@
         type="text" 
         id="inv_image" 
         name="inv_image" 
-        value="<%= typeof inv_image !== 'undefined' ? inv_image : '/images/vehicles/no-image.png' %>"
+        value="<%= inv_image %>"
       >
 
       <!-- Thumbnail Path -->
@@ -72,7 +77,7 @@
         type="text" 
         id="inv_thumbnail" 
         name="inv_thumbnail" 
-        value="<%= typeof inv_thumbnail !== 'undefined' ? inv_thumbnail : '/images/vehicles/no-image-tn.png' %>"
+        value="<%= inv_thumbnail %>"
       >
 
       <!-- Price -->
@@ -84,7 +89,7 @@
         name="inv_price" 
         required 
         min="0"
-        value="<%= typeof inv_price !== 'undefined' ? inv_price : '' %>"
+        value="<%= inv_price %>"
       >
 
       <!-- Year -->
@@ -96,7 +101,7 @@
         required 
         min="1886" 
         max="2100"
-        value="<%= typeof inv_year !== 'undefined' ? inv_year : '' %>"
+        value="<%= inv_year %>"
       >
 
       <!-- Miles -->
@@ -107,7 +112,7 @@
         name="inv_miles" 
         required 
         min="0"
-        value="<%= typeof inv_miles !== 'undefined' ? inv_miles : '' %>"
+        value="<%= inv_miles %>"
       >
 
       <!-- Color -->
@@ -119,10 +124,11 @@
         required 
         pattern="^[A-Za-z\s]{1,30}$" 
         title="Letters and spaces only. Max 30 characters."
-        value="<%= typeof inv_color !== 'undefined' ? inv_color : '' %>"
+        value="<%= inv_color %>"
       >
 
       <button type="submit">Add Vehicle</button>
     </form>
   </div>
-</div>
+</body>
+</html>

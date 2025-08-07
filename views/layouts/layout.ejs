@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
   <!-- Include head partial with CSS and title -->
-  <%- include('../partials/head') %>
+  <%- include('../partials/head') %> 
 
   <body>
+<% if (messages && messages.length > 0) { %>
+  <div class="flash-messages">
+    <% messages.forEach(function(message) { %>
+      <div class="alert alert-info"><%= message %></div>
+    <% }) %>
+  </div>
+<% } %>
+
+
     <div id="wrapper">
       <!-- Header -->
       <%- include('../partials/header') %>
