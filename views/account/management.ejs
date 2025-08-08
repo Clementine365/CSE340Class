@@ -1,40 +1,26 @@
-<h1>Inventory Management</h1>
+<main class="management-container">
+  <h1>Account Management</h1>
 
-<% if (messages && messages.length > 0) { %>
-  <ul class="flash-messages">
-    <% messages.forEach(message => { %>
-      <li><%= message %></li>
-    <% }) %>
-  </ul>
-<% } %>
-
-<h2>Add New Classification or Vehicle</h2>
-<ul>
-  <li><a href="/inv/add-classification">Add Classification</a></li>
-  <li><a href="/inv/add-inventory">Add Vehicle</a></li>
-</ul>
-
-<h2>View Inventory by Classification</h2>
-<form id="classificationForm">
-  <label for="classificationSelect">Select Classification</label>
-  <select id="classificationSelect" name="classification_id">
-    <option value="">-- Select Classification --</option>
-    <% if (Array.isArray(classificationSelect)) { %>
-      <% classificationSelect.forEach(c => { %>
-        <option value="<%= c.classification_id %>"><%= c.classification_name %></option>
+  <% if (messages && messages.length > 0) { %>
+    <ul class="flash-messages">
+      <% messages.forEach(message => { %>
+        <li><%= message %></li>
       <% }) %>
+    </ul>
+  <% } %>
+
+  <% if (accountData) { %>
+    <h2>Welcome <%= accountData.account_firstname %></h2>
+
+    <a href="/account/update/<%= accountData.account_id %>" class="update-account-link">
+      Update Account Information
+    </a>
+
+    <% if (accountData.account_type === 'Employee' || accountData.account_type === 'Admin') { %>
+      <h3>Inventory Management</h3>
+      <p><a href="/inv/manage">Go to Inventory Management</a></p>
     <% } %>
-  </select>
-  <button type="submit">View Inventory</button>
-</form>
-
-<script>
-  document.getElementById("classificationForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const selected = document.getElementById("classificationSelect").value;
-    if (selected) {
-      window.location.href = `/inv/classification/${selected}`;
-    }
-  });
-</script>
-
+  <% } else { %>
+    <p>Please <a href="/account/login">log in</a> to manage your account.</p>
+  <% } %>
+</main>

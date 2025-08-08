@@ -1,12 +1,13 @@
 function checkLogin(req, res, next) {
-  if (req.session && req.session.account) {
-    // User is logged in
-    next();
-  } else {
-    // Not logged in
-    req.flash("notice", "Please log in.");
-    res.redirect("/account/login");
+  if ((req.session && req.session.account) || req.user) {
+    // User is logged in via session or JWT
+    return next();
   }
+
+  // Not logged in
+  req.flash("notice", "Please log in.");
+  return res.redirect("/account/login");
 }
+
 
 module.exports = checkLogin;

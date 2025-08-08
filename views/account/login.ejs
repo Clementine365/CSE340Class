@@ -12,7 +12,7 @@
     <h1><%= title %></h1>
 
     <!-- Notice Flash Messages -->
-    <% if (noticeMessages && noticeMessages.length > 0) { %>
+    <% if (Array.isArray(noticeMessages) && noticeMessages.length > 0) { %>
       <div class="flash flash-notice">
         <% noticeMessages.forEach(msg => { %>
           <p><%= msg %></p>
@@ -21,7 +21,7 @@
     <% } %>
 
     <!-- Error Flash Messages -->
-    <% if (errorMessages && errorMessages.length > 0) { %>
+    <% if (Array.isArray(errorMessages) && errorMessages.length > 0) { %>
       <div class="flash flash-error">
         <% errorMessages.forEach(msg => { %>
           <p><%= msg %></p>
@@ -29,10 +29,10 @@
       </div>
     <% } %>
 
-    <!-- Validation Errors (from errors object, optional) -->
-    <% if (errors && errors.array().length > 0) { %>
+    <!-- Validation Errors -->
+    <% if (errors && Array.isArray(errors) && errors.length > 0) { %>
       <ul class="notice">
-        <% errors.array().forEach(error => { %>
+        <% errors.forEach(error => { %>
           <li><%= error.msg %></li>
         <% }) %>
       </ul>
@@ -57,11 +57,7 @@
 
         <!-- Password rule reminder -->
         <div class="password-rules">
-          Passwords must be at least 12 characters and contain at least:<br />
-          • 1 uppercase letter<br />
-          • 1 lowercase letter<br />
-          • 1 number<br />
-          • 1 special character
+          Password must be at least 8 characters, including at least 1 letter and 1 number.
         </div>
 
         <input 
@@ -70,8 +66,8 @@
           id="account_password" 
           required 
           placeholder="Enter your password"
-          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
-          title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
+          pattern="^(?=.*[a-zA-Z])(?=.*\d).{8,}$"
+          title="At least 8 characters, including at least 1 letter and 1 number"
         />
       </div>
 

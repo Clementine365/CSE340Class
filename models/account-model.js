@@ -1,8 +1,8 @@
-const pool = require("../database/");
-const bcrypt = require("bcrypt");
+const pool = require('../database/'); // Use your existing pool import
+const bcrypt = require('bcrypt');
 
 /* ****************************
- *   Register new account (hashed password)
+ * Register new account (hashed password)
  * **************************** */
 async function registerAccount(account_firstname, account_lastname, account_email, account_password) {
   try {
@@ -17,7 +17,8 @@ async function registerAccount(account_firstname, account_lastname, account_emai
         account_type
       )
       VALUES ($1, $2, $3, $4, 'Client')
-      RETURNING *`;
+      RETURNING *;
+    `;
 
     const result = await pool.query(sql, [
       account_firstname,
@@ -28,73 +29,111 @@ async function registerAccount(account_firstname, account_lastname, account_emai
 
     return result.rows[0];
   } catch (error) {
-    console.error("Register Error:", error);
+    console.error('Register Error:', error);
     return null;
   }
 }
 
 /* ****************************
- *   Check for existing email
+ * Check if email already exists
  * **************************** */
 async function checkExistingEmail(account_email) {
   try {
-    const sql = "SELECT * FROM account WHERE account_email = $1";
+    const sql = 'SELECT * FROM account WHERE account_email = $1';
     const result = await pool.query(sql, [account_email]);
-    return result.rowCount; // true if > 0
+    return result.rowCount > 0;
   } catch (error) {
-    console.error("Email Check Error:", error);
+    console.error('Email Check Error:', error);
     return false;
   }
 }
 
 /* ****************************
- *   Get user by email (for login)
+ * Get account by email
  * **************************** */
-async function getUserByEmail(account_email) {
+async function getAccountByEmail(account_email) {
   try {
-    const sql = "SELECT * FROM account WHERE account_email = $1";
+    const sql = 'SELECT * FROM account WHERE account_email = $1';
     const result = await pool.query(sql, [account_email]);
     return result.rows[0];
   } catch (error) {
-    console.error("Get User Error:", error);
+    console.error('Get Account By Email Error:', error);
     return null;
   }
 }
 
 /* ****************************
- *   Compare plain and hashed password
+ * Get account by ID
+ * **************************** */
+async function getAccountById(account_id) {
+  try {
+    const sql = 'SELECT * FROM account WHERE account_id = $1';
+    const result = await pool.query(sql, [account_id]);
+    return result.rows[0];
+  } catch (error) {
+    console.error('Get Account By ID Error:', error);
+    return null;
+  }
+}
+
+/* ****************************
+ * Update account info (firstname, lastname, email)
+ * **************************** */
+async function updateAccountInfo(account_id, firstname, lastname, email) {
+  try {
+    const sql = `
+      UPDATE account
+      SET account_firstname = $1,
+          account_lastname = $2,
+          account_email = $3
+      WHERE account_id = $4
+      RETURNING *;
+    `;
+    const result = await pool.query(sql, [firstname, lastname, email, account_id]);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Update Account Info Error:', error);
+    return false;
+  }
+}
+
+/* ****************************
+ * Update account password (hashed)
+ * **************************** */
+async function updatePassword(account_id, hashedPassword) {
+  try {
+    const sql = `
+      UPDATE account
+      SET account_password = $1
+      WHERE account_id = $2
+      RETURNING *;
+    `;
+    const result = await pool.query(sql, [hashedPassword, account_id]);
+    return result.rowCount > 0;
+  } catch (error) {
+    console.error('Update Password Error:', error);
+    return false;
+  }
+}
+
+/* ****************************
+ * Compare plain password to hashed password
  * **************************** */
 async function checkPassword(user, inputPassword) {
   try {
     return await bcrypt.compare(inputPassword, user.account_password);
   } catch (error) {
-    console.error("Password Compare Error:", error);
+    console.error('Password Compare Error:', error);
     return false;
   }
 }
 
-
-/* *****************************
- * Return account data using email address
- * ***************************** */
-async function getAccountByEmail(account_email) {
-  try {
-    const result = await pool.query(
-      `SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password 
-       FROM account WHERE account_email = $1`,
-      [account_email]
-    );
-    return result.rows[0];
-  } catch (error) {
-    return new Error("No matching email found");
-  }
-}
-
-
 module.exports = {
   registerAccount,
   checkExistingEmail,
-  getUserByEmail,
+  getAccountByEmail,
+  getAccountById,
+  updateAccountInfo,
+  updatePassword,
   checkPassword,
-  getAccountByEmail, // <== Added to export
 };

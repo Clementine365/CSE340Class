@@ -32,6 +32,14 @@ Util.injectNav = async function (req, res, next) {
 }
 
 /* ************************
+ * Middleware to inject account data into all views
+ ************************** */
+Util.injectAccountData = function (req, res, next) {
+  res.locals.accountData = req.session?.account || null;
+  next();
+}
+
+/* ************************
  * Builds the dropdown list of classifications for forms
  ************************** */
 Util.buildClassificationList = function (classifications, selectedId = null) {

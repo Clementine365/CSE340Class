@@ -84,6 +84,10 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "./layouts/layout");
 
+app.use(utilities.injectNav);
+app.use(utilities.injectAccountData);
+
+
 /* ***********************
  * Routes
  *************************/
