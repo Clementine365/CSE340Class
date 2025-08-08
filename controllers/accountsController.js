@@ -77,7 +77,7 @@ exports.accountLogin = async (req, res) => {
 
     delete accountData.account_password
 
-// ✅ SET SESSION
+// SET SESSION
     req.session.account = accountData;
 
     // Create JWT, set cookie (example)
