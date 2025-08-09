@@ -1,0 +1,41 @@
+
+
+<div class="service-history-container">
+  <h1><%= title %></h1>
+
+  <% if (errors && errors.length > 0) { %>
+    <ul class="error-messages">
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <form action="/service-history/add" method="POST">
+    <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+    <label for="service_date">Service Date</label>
+    <input 
+      type="date" 
+      name="service_date" 
+      value="<%= typeof service_date !== 'undefined' ? service_date : '' %>" 
+      required
+    >
+
+    <label for="description">Description</label>
+    <textarea name="description" required><%= typeof description !== 'undefined' ? description : '' %></textarea>
+
+    <label for="cost">Cost</label>
+    <input 
+      type="number" 
+      step="0.01" 
+      name="cost" 
+      value="<%= typeof cost !== 'undefined' ? cost : '' %>" 
+      required
+    >
+
+    <button type="submit">Save</button>
+  </form>
+</div>
+
+

@@ -6,7 +6,7 @@ const validate = require("../utilities/inventory-validation");
 const Util = require("../utilities/index");
 
 // Inventory management view
-router.get("/", Util.checkLogin, invController.buildManagement);
+router.get("/management", Util.checkLogin, invController.buildManagement);
 
 // Add Classification
 router.get("/add-classification", Util.checkLogin, invController.buildAddClassification);
@@ -50,5 +50,8 @@ router.get("/delete/:inv_id", Util.checkLogin, invController.buildDeleteInventor
 
 // Perform Delete (POST)
 router.post("/delete", Util.checkLogin, invController.deleteInventory);
+
+
+
 
 module.exports = router;

@@ -6,9 +6,10 @@
     <h1>Add New Classification</h1>
 
     <!-- Flash or General Message -->
-    <% if (message) { %>
-      <div class="flash-message"><%= message %></div>
-    <% } %>
+    <% if (messages && messages.info && messages.info.length > 0) { %>
+  <div class="flash-message"><%= messages.info[0] %></div>
+<% } %>
+
 
     <!-- Validation Errors -->
     <% if (errors && errors.array && errors.array().length > 0) { %>

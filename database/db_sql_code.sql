@@ -261,4 +261,13 @@ WHERE c.classification_name = 'Sport';
 UPDATE inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
-    
+
+
+CREATE TABLE public.service_history (
+    service_id SERIAL PRIMARY KEY,
+    inv_id INT NOT NULL REFERENCES public.inventory(inv_id) ON DELETE CASCADE,
+    service_date DATE NOT NULL,
+    description TEXT NOT NULL,
+    cost NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

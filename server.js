@@ -22,7 +22,7 @@ const accountRoute = require("./routes/accountRoute");
 const baseController = require("./controllers/baseController");
 const errorRoute = require("./routes/errorRoute");
 const utilities = require("./utilities");
-
+const serviceHistoryRoute = require("./routes/serviceHistoryRoute");
 /* ***********************
  * Middleware
  *************************/
@@ -96,13 +96,14 @@ app.use(staticRoutes);
 app.use("/account", accountRoute);
 app.get("/", utilities.handleErrors(baseController.buildHome));
 app.use("/inv", inventoryRoute);
-
+app.use("/service-history", serviceHistoryRoute);
 /* ***********************
  * 404 Not Found Middleware
  *************************/
 app.use((req, res, next) => {
   next({ status: 404, message: "Sorry, seems like we lost that page." });
 });
+
 
 /* ***********************
  * Error Handler Middleware

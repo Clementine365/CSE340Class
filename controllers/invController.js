@@ -1,7 +1,9 @@
 const invModel = require("../models/inventory-model");
 const Util = require("../utilities");
+const { validationResult } = require("express-validator");
 
 const invController = {};
+
 /* ===============================
    Inventory Management View
 ================================= */
@@ -11,22 +13,19 @@ invController.buildManagement = async (req, res, next) => {
     let classifications = await invModel.getClassifications();
     if (!Array.isArray(classifications)) classifications = [];
 
-    // Get classification_id from query string, if any
     const classification_id = req.query.classification_id || "";
 
-    // If a classification is selected, load its inventory
     let inventory = [];
     if (classification_id) {
       inventory = await invModel.getInventoryByClassificationId(classification_id);
     }
- // ✅ Add this to debug what's passed to the view
+
     console.log("Rendering management with:", {
       classifications,
       classification_id,
       inventory,
-      messages: req.flash()
+      messages: req.flash(),
     });
-
 
     res.render("inventory/management", {
       title: "Inventory Management",
@@ -37,10 +36,11 @@ invController.buildManagement = async (req, res, next) => {
       messages: req.flash(),
     });
   } catch (error) {
-    console.error("Error rendering management view:", error);
+    console.error("Error in buildManagement:", error);
     next(error);
   }
 };
+
 
 /* ===============================
    Show Add Classification Form
@@ -48,10 +48,13 @@ invController.buildManagement = async (req, res, next) => {
 invController.buildAddClassification = async (req, res, next) => {
   try {
     const nav = await Util.getNav();
+
     res.render("inventory/add-classification", {
       title: "Add Classification",
       nav,
       messages: req.flash(),
+      errors: null,                // no errors initially
+      classification_name: "",     // no pre-filled value initially
     });
   } catch (error) {
     next(error);
@@ -63,15 +66,29 @@ invController.buildAddClassification = async (req, res, next) => {
 ================================= */
 invController.addClassification = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
     const { classification_name } = req.body;
+
+    if (!errors.isEmpty()) {
+      const nav = await Util.getNav();
+      // Render form again with errors and previous input preserved
+      return res.status(400).render("inventory/add-classification", {
+        title: "Add Classification",
+        nav,
+        messages: req.flash(),
+        errors,                    // validation errors
+        classification_name,       // preserve user input
+      });
+    }
+
     const newClassification = await invModel.addClassification(classification_name);
 
     if (newClassification) {
       req.flash("info", `Classification "${newClassification.classification_name}" added successfully.`);
-      res.redirect("/inv/management");
+      return res.redirect("/inv/management");
     } else {
       req.flash("info", "Failed to add classification.");
-      res.redirect("/inv/add-classification");
+      return res.redirect("/inv/add-classification");
     }
   } catch (error) {
     next(error);
@@ -119,15 +136,15 @@ invController.addInventory = async (req, res, next) => {
 
     if (added) {
       req.flash("info", "Vehicle added successfully!");
-      res.redirect("/inv/management");
+      return res.redirect("/inv/management");
     } else {
       req.flash("info", "Failed to add vehicle.");
-      res.redirect("/inv/add-inventory");
+      return res.redirect("/inv/add-inventory");
     }
   } catch (error) {
     console.error("Error adding inventory:", error);
     req.flash("info", "Failed to add vehicle.");
-    res.redirect("/inv/add-inventory");
+    return res.redirect("/inv/add-inventory");
   }
 };
 
@@ -233,7 +250,7 @@ invController.updateInventory = async function (req, res) {
     inv_price,
     inv_miles,
     inv_color,
-    inv_id
+    inv_id,
   } = req.body;
 
   const updateResult = await invModel.updateInventory([
@@ -247,7 +264,7 @@ invController.updateInventory = async function (req, res) {
     inv_price,
     inv_miles,
     inv_color,
-    inv_id
+    inv_id,
   ]);
 
   if (updateResult) {
@@ -286,8 +303,7 @@ invController.buildDeleteInventory = async (req, res, next) => {
   }
 };
 
-
-  // Delete Inventory
+// Delete Inventory
 invController.deleteInventory = async (req, res, next) => {
   try {
     const inv_id = parseInt(req.body.inv_id);
@@ -304,5 +320,6 @@ invController.deleteInventory = async (req, res, next) => {
     console.error("Error deleting vehicle:", error);
     next(error);
   }
-}; 
+};
+
 module.exports = invController;
