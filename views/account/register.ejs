@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title><%= title %></title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
   <div class="register-form-container">
     <h1><%= title %></h1>
 
     <!-- Flash Messages -->
-    <% if (messages().notice && messages().notice.length > 0) { %>
+    <% if (noticeMessages && noticeMessages.length > 0) { %>
       <div class="flash-notice">
-        <% messages().notice.forEach(msg => { %>
+        <% noticeMessages.forEach(msg => { %>
           <p><%= msg %></p>
-        <% }) %>
+        <% }); %>
       </div>
     <% } %>
 
     <!-- Validation Errors -->
-    <% if (errors) { %>
+    <% if (errors && errors.length > 0) { %>
       <ul class="notice">
-        <% errors.array().forEach(error => { %>
+        <% errors.forEach(error => { %>
           <li><%= error.msg %></li>
-        <% }) %>
+        <% }); %>
       </ul>
     <% } %>
 
@@ -31,40 +31,60 @@
     <form class="register-form" id="registerForm" action="/account/register" method="post">
       <div class="form-group">
         <label for="accountFirstname">First Name</label>
-        <input type="text" name="account_firstname" id="accountFirstname" required 
-               value="<%= locals.account_firstname %>">
+        <input
+          type="text"
+          name="account_firstname"
+          id="accountFirstname"
+          required
+          value="<%= typeof account_firstname !== 'undefined' ? account_firstname : '' %>"
+        />
       </div>
 
       <div class="form-group">
         <label for="accountLastname">Last Name</label>
-        <input type="text" name="account_lastname" id="accountLastname" required 
-               value="<%= locals.account_lastname %>">
+        <input
+          type="text"
+          name="account_lastname"
+          id="accountLastname"
+          required
+          value="<%= typeof account_lastname !== 'undefined' ? account_lastname : '' %>"
+        />
       </div>
 
       <div class="form-group">
         <label for="account_email">Email Address</label>
-        <input type="email" name="account_email" id="account_email" required 
-               placeholder="example@example.com"
-               value="<%= locals.account_email %>">
+        <input
+          type="email"
+          name="account_email"
+          id="account_email"
+          required
+          placeholder="example@example.com"
+          value="<%= typeof account_email !== 'undefined' ? account_email : '' %>"
+        />
       </div>
 
       <div class="form-group">
         <label for="account_password">Password</label>
-        
+
         <!-- Password rule hint -->
         <div class="password-rules">
-          Passwords must be at least 12 characters and contain at least:<br>
-          • 1 uppercase letter<br>
-          • 1 lowercase letter<br>
-          • 1 number<br>
+          Passwords must be at least 12 characters and contain at least:<br />
+          • 1 uppercase letter<br />
+          • 1 lowercase letter<br />
+          • 1 number<br />
           • 1 special character
         </div>
 
         <!-- Password input + toggle -->
         <div class="password-container">
-          <input type="password" id="account_password" name="account_password" required
-                 title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
-                 pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+          <input
+            type="password"
+            id="account_password"
+            name="account_password"
+            required
+            title="Min 12 characters, 1 uppercase letter, 1 number, 1 special character"
+            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+          />
           <button type="button" id="togglePassword">👁️</button>
         </div>
       </div>

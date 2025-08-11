@@ -2,9 +2,10 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
+const { validationResult } = require("express-validator");
 const utilities = require("../utilities/");
 const accountModel = require("../models/account-model");
-const invModel = require("../models/inventory-model");  // Added to get classifications
+const invModel = require("../models/inventory-model");
 
 /* ****************************************
  * Deliver login view
@@ -35,6 +36,9 @@ async function buildRegister(req, res) {
     nav,
     errors: null,
     noticeMessages,
+    account_firstname: "",
+    account_lastname: "",
+    account_email: "",
   });
 }
 
@@ -44,6 +48,20 @@ async function buildRegister(req, res) {
 async function registerAccount(req, res) {
   const nav = await utilities.getNav();
   const { account_firstname, account_lastname, account_email, account_password } = req.body;
+
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    // On validation error, re-render form with input values & errors
+    return res.status(400).render("account/register", {
+      title: "Register",
+      nav,
+      errors: validationErrors.array(),
+      noticeMessages: req.flash("notice"),
+      account_firstname,
+      account_lastname,
+      account_email,
+    });
+  }
 
   try {
     const regResult = await accountModel.registerAccount(
@@ -69,6 +87,9 @@ async function registerAccount(req, res) {
         nav,
         errors: null,
         noticeMessages: req.flash("notice"),
+        account_firstname,
+        account_lastname,
+        account_email,
       });
     }
   } catch (err) {
@@ -215,7 +236,7 @@ async function buildAccountManagement(req, res, next) {
     res.render("account/management", {
       title: "Account Management",
       nav,
-      classificationSelect,  // Pass this so your view dropdown works
+      classificationSelect,
       message,
       errors: null,
     });
